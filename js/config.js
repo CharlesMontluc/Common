@@ -2,12 +2,13 @@
 // Replace with your Firebase project config from Firebase Console
 
 const firebaseConfig = {
-    apiKey: "YOUR_API_KEY",
-    authDomain: "YOUR_PROJECT.firebaseapp.com",
-    projectId: "YOUR_PROJECT_ID",
-    storageBucket: "YOUR_PROJECT.appspot.com",
-    messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-    appId: "YOUR_APP_ID"
+    apiKey: "AIzaSyCldaebb7COJN-iIgkn-B9WpTzxyJkFmrc",
+    authDomain: "bait-internships.firebaseapp.com",
+    projectId: "bait-internships",
+    storageBucket: "bait-internships.firebasestorage.app",
+    messagingSenderId: "244726921204",
+    appId: "1:244726921204:web:3494c5d15cdf1856542ba1",
+    measurementId: "G-SHG8GR950C"
 };
 
 // Initialize Firebase
