@@ -11,13 +11,22 @@ const firebaseConfig = {
     measurementId: "G-SHG8GR950C"
 };
 
+console.log('Firebase Config loaded');
+
 // Initialize Firebase
-firebase.initializeApp(firebaseConfig);
+try {
+    firebase.initializeApp(firebaseConfig);
+    console.log('Firebase initialized successfully');
+} catch (error) {
+    console.error('Firebase initialization failed:', error);
+}
 
 // Get references to services
 const auth = firebase.auth();
 const db = firebase.firestore();
 const storage = firebase.storage();
+
+console.log('Firebase services initialized - Auth, Firestore, Storage');
 
 // Enable offline persistence
 db.enablePersistence()

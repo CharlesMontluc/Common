@@ -16,22 +16,24 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (authManager.isAuthenticated()) {
             // Route authenticated users to their dashboard
             if (authManager.isStudent()) {
-                router.navigate('/student/dashboard');
+                await router.navigate('/student/dashboard');
             } else if (authManager.isRecruiter()) {
-                router.navigate('/recruiter/dashboard');
+                await router.navigate('/recruiter/dashboard');
             } else {
                 // Profile not complete, go to onboarding
-                router.navigate('/onboarding');
+                await router.navigate('/onboarding');
             }
         } else {
             // Route unauthenticated users
             if (path === '/' || path === '/login' || path === '/signup' || path === '/onboarding') {
-                router.navigate(path);
+                await router.navigate(path);
             } else {
-                router.navigate('/login');
+                await router.navigate('/');
             }
         }
     } catch (error) {
         console.error('App initialization error:', error);
+        // Fallback: show landing page on error
+        await router.navigate('/');
     }
 });
