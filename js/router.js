@@ -43,8 +43,14 @@ class Router {
             if (route.scriptFile) {
                 const script = document.createElement('script');
                 script.src = route.scriptFile;
-                script.type = 'module';
+                // DO NOT use type="module" - scripts need access to global variables
                 document.body.appendChild(script);
+                
+                // Wait for script to load before continuing
+                await new Promise((resolve) => {
+                    script.onload = resolve;
+                    script.onerror = resolve; // Resolve even on error to not block navigation
+                });
             }
 
             // Update URL using hash-based routing
