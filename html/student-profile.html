@@ -1,0 +1,57 @@
+<header>
+    <div class="container">
+        <nav class="flex-between">
+            <div class="logo">BAIT</div>
+            <div style="flex: 1; margin-left: 3rem;">
+                <ul class="nav-links">
+                    <li><a href="#" onclick="router.navigate('/student/dashboard')">Home</a></li>
+                    <li><a href="#" onclick="router.navigate('/student/applications')">My Applications</a></li>
+                    <li><a href="#" onclick="router.navigate('/student/profile')">Profile</a></li>
+                </ul>
+            </div>
+            <div class="nav-right">
+                <button class="btn-secondary btn-small" onclick="handleLogout()">Sign Out</button>
+            </div>
+        </nav>
+    </div>
+</header>
+
+<main>
+    <div class="container" style="max-width: 900px; padding: 2rem 1rem;">
+        <h1>My Profile</h1>
+
+        <div class="card" style="margin-top: 2rem;">
+            <h2>Personal Information</h2>
+
+            <div class="form-group">
+                <label>Full Name</label>
+                <p id="profileName" style="font-weight: 500;"></p>
+            </div>
+
+            <div class="form-group">
+                <label>Email</label>
+                <p id="profileEmail" style="font-weight: 500;"></p>
+            </div>
+
+            <div class="form-group">
+                <label>Role/Title</label>
+                <p id="profileRole" style="font-weight: 500;"></p>
+            </div>
+
+            <div class="form-group">
+                <label>Location</label>
+                <p id="profileLocation" style="font-weight: 500;"></p>
+            </div>
+
+            <h2 style="margin-top: 2rem;">Skills</h2>
+            <div id="skillsList" style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 2rem;"></div>
+
+            <h2>Target Internship Roles</h2>
+            <div id="rolesList" style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 2rem;"></div>
+
+            <button class="btn-primary" onclick="router.navigate('/student/dashboard')">Back to Offers</button>
+        </div>
+    </div>
+</main>
+
+<script src="js/pages/student-profile.js"></script>

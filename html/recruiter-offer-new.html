@@ -1,0 +1,85 @@
+<header>
+    <div class="container">
+        <nav class="flex-between">
+            <div class="logo">BAIT</div>
+            <div style="flex: 1; margin-left: 3rem;">
+                <ul class="nav-links">
+                    <li><a href="#" onclick="router.navigate('/recruiter/dashboard')">Dashboard</a></li>
+                    <li><a href="#" onclick="router.navigate('/recruiter/offers')">My Offers</a></li>
+                </ul>
+            </div>
+            <div class="nav-right">
+                <button class="btn-secondary btn-small" onclick="handleLogout()">Sign Out</button>
+            </div>
+        </nav>
+    </div>
+</header>
+
+<main>
+    <div class="container" style="max-width: 1000px; padding: 2rem 1rem;">
+        <h1>Create New Internship Offer</h1>
+
+        <div class="card" style="margin-top: 2rem;">
+            <form id="offerForm">
+                <div class="form-group">
+                    <label for="title">Job Title *</label>
+                    <input type="text" id="title" name="title" required placeholder="e.g., Frontend Engineer Intern">
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="role">Role/Department *</label>
+                        <input type="text" id="role" name="role" required placeholder="e.g., Engineering, Product">
+                    </div>
+                    <div class="form-group">
+                        <label for="location">Location *</label>
+                        <input type="text" id="location" name="location" required placeholder="e.g., San Francisco, CA or Remote">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="duration">Duration *</label>
+                        <input type="text" id="duration" name="duration" required placeholder="e.g., 3 months, Summer 2025">
+                    </div>
+                    <div class="form-group">
+                        <label for="stipend">Stipend (Optional)</label>
+                        <input type="text" id="stipend" name="stipend" placeholder="e.g., $18/hour or $5000/month">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="description">Job Description *</label>
+                    <textarea id="description" name="description" required placeholder="Describe the internship opportunity, what the intern will work on, and the impact they'll have..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="requiredSkills">Required Skills (comma-separated) *</label>
+                    <input type="text" id="requiredSkills" name="requiredSkills" required placeholder="e.g., JavaScript, React, Python">
+                </div>
+
+                <div class="form-group">
+                    <label for="responsibilities">Key Responsibilities (one per line)</label>
+                    <textarea id="responsibilities" name="responsibilities" placeholder="• Work on frontend features&#10;• Collaborate with design team&#10;• Write unit tests"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="requirements">What We're Looking For (one per line)</label>
+                    <textarea id="requirements" name="requirements" placeholder="• Strong fundamentals in computer science&#10;• Experience with modern web frameworks&#10;• Great communication skills"></textarea>
+                </div>
+
+                <div id="formError" class="alert alert-danger" style="display: none;"></div>
+
+                <div style="display: flex; gap: 1rem;">
+                    <button type="submit" class="btn-primary" style="flex: 1;">Create Offer</button>
+                    <button type="button" class="btn-secondary" onclick="router.navigate('/recruiter/dashboard')" style="flex: 1;">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</main>
+
+<script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore.js"></script>
+<script src="js/services/offers.js"></script>
+<script src="js/pages/recruiter-offer-new.js"></script>

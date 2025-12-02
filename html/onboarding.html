@@ -1,0 +1,90 @@
+<header>
+    <div class="container">
+        <nav>
+            <div class="logo">BAIT</div>
+            <div class="nav-right">
+                <button class="btn-secondary" onclick="handleLogout()">Sign Out</button>
+            </div>
+        </nav>
+    </div>
+</header>
+
+<main>
+    <div class="container" style="max-width: 800px; padding: 4rem 1rem;">
+        <h1>Welcome to BAIT!</h1>
+        <p>Let's set up your profile. Choose how you want to use BAIT:</p>
+
+        <div class="grid grid-2" style="margin: 3rem 0;">
+            <div class="card" style="cursor: pointer; border: 2px solid var(--gray-300); transition: all 0.2s;"
+                 onclick="selectUserType('student')" id="studentCard">
+                <h3>I'm a Student</h3>
+                <p>Looking for an internship opportunity</p>
+                <p style="color: var(--primary); font-weight: 500;">→ Continue as Student</p>
+            </div>
+
+            <div class="card" style="cursor: pointer; border: 2px solid var(--gray-300); transition: all 0.2s;"
+                 onclick="selectUserType('recruiter')" id="recruiterCard">
+                <h3>I'm a Recruiter</h3>
+                <p>Hiring talented interns for my company</p>
+                <p style="color: var(--primary); font-weight: 500;">→ Continue as Recruiter</p>
+            </div>
+        </div>
+
+        <div id="onboardingForm" style="display: none;">
+            <div class="card">
+                <h2>Complete Your Profile</h2>
+
+                <form id="profileForm">
+                    <div class="form-group">
+                        <label for="name">Full Name</label>
+                        <input type="text" id="name" name="name" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="role">Role/Title</label>
+                        <input type="text" id="role" name="role" 
+                               placeholder="e.g., Computer Science Student or Hiring Manager">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="location">Location</label>
+                        <input type="text" id="location" name="location" placeholder="e.g., San Francisco, CA">
+                    </div>
+
+                    <div id="studentFields" style="display: none;">
+                        <div class="form-group">
+                            <label for="skills">Skills (comma-separated)</label>
+                            <input type="text" id="skills" name="skills" 
+                                   placeholder="e.g., JavaScript, React, Python, Data Analysis">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="targetRoles">Target Internship Roles (comma-separated)</label>
+                            <input type="text" id="targetRoles" name="targetRoles" 
+                                   placeholder="e.g., Frontend Engineer, Product Manager, Data Analyst">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="cv">Upload CV (PDF)</label>
+                            <input type="file" id="cv" name="cv" accept=".pdf">
+                            <small>Optional - you can upload it later</small>
+                        </div>
+                    </div>
+
+                    <div id="recruiterFields" style="display: none;">
+                        <div class="form-group">
+                            <label for="company">Company Name</label>
+                            <input type="text" id="company" name="company" required>
+                        </div>
+                    </div>
+
+                    <div id="formError" class="alert alert-danger" style="display: none;"></div>
+
+                    <button type="submit" class="btn-primary" style="width: 100%; margin-top: 1rem;">Complete Profile</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script src="js/pages/onboarding.js" type="module"></script>

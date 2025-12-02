@@ -1,0 +1,60 @@
+<header>
+    <div class="container">
+        <nav class="flex-between">
+            <div class="logo">BAIT</div>
+            <div style="flex: 1; margin-left: 3rem;">
+                <ul class="nav-links">
+                    <li><a href="#" onclick="router.navigate('/recruiter/dashboard')">Dashboard</a></li>
+                    <li><a href="#" onclick="router.navigate('/recruiter/offers')">My Offers</a></li>
+                </ul>
+            </div>
+            <div class="nav-right">
+                <span id="companyName" style="margin-right: 1rem;"></span>
+                <button class="btn-secondary btn-small" onclick="handleLogout()">Sign Out</button>
+            </div>
+        </nav>
+    </div>
+</header>
+
+<main>
+    <div class="container">
+        <div style="padding: 2rem 0;">
+            <h1>Recruiter Dashboard</h1>
+
+            <div class="grid grid-3" style="margin: 2rem 0;">
+                <div class="card text-center">
+                    <h3 id="totalOffers">0</h3>
+                    <p style="color: var(--gray-600);">Active Offers</p>
+                </div>
+                <div class="card text-center">
+                    <h3 id="totalApplications">0</h3>
+                    <p style="color: var(--gray-600);">Total Applications</p>
+                </div>
+                <div class="card text-center">
+                    <h3 id="pendingApplications">0</h3>
+                    <p style="color: var(--gray-600);">Pending Review</p>
+                </div>
+            </div>
+
+            <div style="margin: 2rem 0;">
+                <h2>Your Offers</h2>
+                <button class="btn-primary" onclick="router.navigate('/recruiter/offer/new')">+ Create New Offer</button>
+            </div>
+
+            <div id="offersContainer" class="grid grid-2">
+                <!-- Offers will be loaded here -->
+            </div>
+
+            <div id="noOffers" class="text-center" style="padding: 2rem; display: none;">
+                <p>You haven't created any offers yet.</p>
+                <button class="btn-primary" onclick="router.navigate('/recruiter/offer/new')">Create Your First Offer</button>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore.js"></script>
+<script src="js/services/offers.js"></script>
+<script src="js/services/applications.js"></script>
+<script src="js/pages/recruiter-dashboard.js"></script>

@@ -1,0 +1,50 @@
+<header>
+    <div class="container">
+        <nav class="flex-between">
+            <div class="logo">BAIT</div>
+            <div style="flex: 1; margin-left: 3rem;">
+                <ul class="nav-links">
+                    <li><a href="#" onclick="router.navigate('/student/dashboard')">Home</a></li>
+                    <li><a href="#" onclick="router.navigate('/student/applications')">My Applications</a></li>
+                    <li><a href="#" onclick="router.navigate('/student/profile')">Profile</a></li>
+                </ul>
+            </div>
+            <div class="nav-right">
+                <span id="userName" style="margin-right: 1rem;"></span>
+                <button class="btn-secondary btn-small" onclick="handleLogout()">Sign Out</button>
+            </div>
+        </nav>
+    </div>
+</header>
+
+<main>
+    <div class="container">
+        <div style="padding: 2rem 0;">
+            <h1>Browse Internship Offers</h1>
+            <p>Find and apply to amazing internship opportunities</p>
+
+            <div style="margin: 2rem 0; display: flex; gap: 1rem; flex-wrap: wrap;">
+                <input type="text" id="searchInput" placeholder="Search by role..." style="flex: 1; min-width: 200px;">
+                <select id="locationFilter" style="padding: 0.75rem;">
+                    <option value="">All Locations</option>
+                </select>
+                <button class="btn-primary" onclick="filterOffers()">Filter</button>
+                <button class="btn-secondary" onclick="resetFilters()">Reset</button>
+            </div>
+
+            <div id="offersContainer" class="grid grid-2">
+                <!-- Offers will be loaded here -->
+            </div>
+
+            <div id="noOffers" class="text-center" style="padding: 2rem; display: none;">
+                <p>No internship offers found. Check back soon!</p>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore.js"></script>
+<script src="js/services/offers.js"></script>
+<script src="js/utils/fitScore.js"></script>
+<script src="js/pages/student-dashboard.js"></script>

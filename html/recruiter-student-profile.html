@@ -1,0 +1,31 @@
+<header>
+    <div class="container">
+        <nav class="flex-between">
+            <div class="logo">BAIT</div>
+            <div style="flex: 1; margin-left: 3rem;">
+                <ul class="nav-links">
+                    <li><a href="#" onclick="router.navigate('/recruiter/dashboard')">Dashboard</a></li>
+                    <li><a href="#" onclick="router.navigate('/recruiter/offers')">My Offers</a></li>
+                </ul>
+            </div>
+            <div class="nav-right">
+                <button class="btn-secondary btn-small" onclick="handleLogout()">Sign Out</button>
+            </div>
+        </nav>
+    </div>
+</header>
+
+<main>
+    <div class="container" style="max-width: 900px; padding: 2rem 1rem;">
+        <button class="btn-secondary" onclick="history.back()">← Back</button>
+
+        <div id="studentContainer" style="margin-top: 2rem;">
+            <!-- Student profile will be loaded here -->
+        </div>
+    </div>
+</main>
+
+<script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore.js"></script>
+<script src="js/services/applications.js"></script>
+<script src="js/pages/recruiter-student-profile.js"></script>

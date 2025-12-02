@@ -1,0 +1,34 @@
+<header>
+    <div class="container">
+        <nav class="flex-between">
+            <div class="logo">BAIT</div>
+            <div style="flex: 1; margin-left: 3rem;">
+                <ul class="nav-links">
+                    <li><a href="#" onclick="router.navigate('/student/dashboard')">Home</a></li>
+                    <li><a href="#" onclick="router.navigate('/student/applications')">My Applications</a></li>
+                    <li><a href="#" onclick="router.navigate('/student/profile')">Profile</a></li>
+                </ul>
+            </div>
+            <div class="nav-right">
+                <button class="btn-secondary btn-small" onclick="handleLogout()">Sign Out</button>
+            </div>
+        </nav>
+    </div>
+</header>
+
+<main>
+    <div class="container" style="max-width: 900px; padding: 2rem 1rem;">
+        <button class="btn-secondary" onclick="router.navigate('/student/dashboard')">← Back to Offers</button>
+
+        <div id="offerContainer" style="margin-top: 2rem;">
+            <!-- Offer details will be loaded here -->
+        </div>
+    </div>
+</main>
+
+<script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore.js"></script>
+<script src="js/services/offers.js"></script>
+<script src="js/services/applications.js"></script>
+<script src="js/utils/fitScore.js"></script>
+<script src="js/pages/student-offer-detail.js"></script>

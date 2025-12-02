@@ -1,0 +1,16 @@
+{
+  "name": "bait",
+  "version": "1.0.0",
+  "description": "BAIT - Practical hiring tool for internships only",
+  "main": "index.js",
+  "scripts": {
+    "start": "python3 -m http.server 8000",
+    "dev": "python3 -m http.server 8000"
+  },
+  "keywords": ["internship", "hiring", "recruitment"],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "firebase": "^10.0.0"
+  }
+}
