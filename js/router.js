@@ -29,9 +29,11 @@ class Router {
         const route = this.routes[path];
 
         try {
-            // Load HTML
-            const response = await fetch(route.htmlFile);
-            if (!response.ok) throw new Error(`Failed to load ${route.htmlFile}`);
+            // Load HTML - use absolute path from root
+            const htmlPath = route.htmlFile.startsWith('/') ? route.htmlFile : '/' + route.htmlFile;
+            console.log('Fetching:', htmlPath);
+            const response = await fetch(htmlPath);
+            if (!response.ok) throw new Error(`Failed to load ${htmlPath}: ${response.status}`);
             const html = await response.text();
 
             // Render to root
@@ -45,11 +47,11 @@ class Router {
                 document.body.appendChild(script);
             }
 
-            // Update URL
-            window.history.pushState(null, '', path);
+            // Update URL using hash-based routing
+            window.location.hash = path;
         } catch (error) {
             console.error('Navigation error:', error);
-            document.getElementById('root').innerHTML = '<h1>Error loading page</h1>';
+            document.getElementById('root').innerHTML = '<h1>Error loading page: ' + error.message + '</h1>';
         }
     }
 
@@ -85,8 +87,14 @@ function setupRoutes() {
     router.register('/recruiter/student/:id', 'html/recruiter-student-profile.html', 'js/pages/recruiter-student-profile.js');
 }
 
+// Handle hash-based navigation
+window.addEventListener('hashchange', () => {
+    const path = window.location.hash.slice(1) || '/';
+    router.navigate(path);
+});
+
 // Handle browser back/forward buttons
 window.addEventListener('popstate', () => {
-    const path = window.location.pathname;
+    const path = window.location.hash.slice(1) || '/';
     router.navigate(path);
 });

@@ -10,8 +10,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         // Setup routes
         setupRoutes();
 
-        // Navigate to initial page
-        const path = window.location.pathname || '/';
+        // Navigate to initial page based on hash
+        const path = window.location.hash.slice(1) || '/';
         
         if (authManager.isAuthenticated()) {
             // Route authenticated users to their dashboard
