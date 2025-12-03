@@ -483,7 +483,7 @@ const CandidateCard = ({ applicant, rank, onView }) => {
       {isTopPick && (
         <div className="absolute -top-3 -right-3 bg-gradient-to-r from-yellow-400 to-amber-500 text-white px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1 shadow-lg">
           <Sparkles className="w-3 h-3" />
-          AI TOP PICK
+          Top suggestion by AI
         </div>
       )}
 
@@ -565,23 +565,29 @@ const CandidateCard = ({ applicant, rank, onView }) => {
           </div>
         </div>
 
-        {/* Matched Skills */}
-        {applicant.matchedSkills.length > 0 && (
-          <div className="mb-4">
-            <p className="text-xs text-gray-500 mb-2 font-medium">Matched Requirements</p>
-            <div className="flex flex-wrap gap-2">
-              {applicant.matchedSkills.slice(0, 5).map((skill, idx) => (
-                <span 
-                  key={idx}
-                  className="px-2 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-medium flex items-center gap-1"
-                >
-                  <CheckCircle className="w-3 h-3" />
-                  {skill}
-                </span>
-              ))}
+        {/* Matched Skills - filter out duplicates from strengths */}
+        {(() => {
+          const strengthsLower = applicant.strengths.map(s => s.toLowerCase());
+          const uniqueMatchedSkills = applicant.matchedSkills.filter(
+            skill => !strengthsLower.some(s => s.includes(skill.toLowerCase()) || skill.toLowerCase().includes(s))
+          );
+          return uniqueMatchedSkills.length > 0 && (
+            <div className="mb-4">
+              <p className="text-xs text-gray-500 mb-2 font-medium">Matched Requirements</p>
+              <div className="flex flex-wrap gap-2">
+                {uniqueMatchedSkills.slice(0, 5).map((skill, idx) => (
+                  <span 
+                    key={idx}
+                    className="px-2 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-medium flex items-center gap-1"
+                  >
+                    <CheckCircle className="w-3 h-3" />
+                    {skill}
+                  </span>
+                ))}
+              </div>
             </div>
-          </div>
-        )}
+          );
+        })()}
 
         {/* CV Snippet */}
         <div className="bg-gray-50 rounded-lg p-3 mb-4">
