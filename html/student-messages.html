@@ -1,0 +1,56 @@
+<header>
+    <div class="container">
+        <nav class="flex-between">
+            <a href="#/login" class="logo" style="text-decoration:none;color:inherit;cursor:pointer;">BAIT</a>
+            <div style="flex: 1; margin-left: 3rem;">
+                <ul class="nav-links">
+                    <li><a href="#/student/dashboard">Home</a></li>
+                    <li><a href="#/student/applications">My Applications</a></li>
+                    <li><a href="#/student/messages" class="active">Messages</a></li>
+                    <li><a href="#/student/results">Results</a></li>
+                    <li><a href="#/student/profile">Profile</a></li>
+                </ul>
+            </div>
+            <div class="nav-right">
+                <button class="btn-secondary btn-small" onclick="window.handleLogout()">Sign Out</button>
+            </div>
+        </nav>
+    </div>
+</header>
+
+<main>
+    <div class="container">
+        <div style="padding: 2rem 0;">
+            <h1>💬 Messages</h1>
+            <p style="color: #6b7280; margin-bottom: 2rem;">Chat with companies about your applications</p>
+
+            <div style="display: grid; grid-template-columns: 300px 1fr; gap: 1.5rem; min-height: 500px;">
+                <!-- Conversations List -->
+                <div id="conversationsList" class="card" style="padding: 0; overflow: hidden;">
+                    <div style="padding: 1rem; background: linear-gradient(135deg, #2563eb, #7c3aed); color: white;">
+                        <h3 style="margin: 0; color: white;">Conversations</h3>
+                    </div>
+                    <div id="conversationsContainer" style="max-height: 450px; overflow-y: auto;">
+                        <p style="text-align:center; padding: 2rem; color: #6b7280;">Loading conversations...</p>
+                    </div>
+                </div>
+
+                <!-- Chat Area -->
+                <div id="chatArea" class="card" style="display: flex; flex-direction: column; padding: 0; overflow: hidden;">
+                    <div id="chatHeader" style="padding: 1rem; background: #f3f4f6; border-bottom: 1px solid #e5e7eb;">
+                        <p style="margin: 0; color: #6b7280;">Select a conversation to start chatting</p>
+                    </div>
+                    <div id="messagesContainer" style="flex: 1; padding: 1rem; overflow-y: auto; min-height: 350px; background: #fafafa;">
+                        <!-- Messages will appear here -->
+                    </div>
+                    <div id="messageInput" style="padding: 1rem; border-top: 1px solid #e5e7eb; display: none;">
+                        <form id="sendMessageForm" onsubmit="sendMessage(event)" style="display: flex; gap: 0.5rem;">
+                            <input type="text" id="messageText" placeholder="Type your message..." style="flex: 1; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 0.5rem;">
+                            <button type="submit" class="btn-primary">Send</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>

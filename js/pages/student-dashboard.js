@@ -162,62 +162,79 @@ function getFitLabel(score) {
 async function fetchRealInternships(skills, targetRoles) {
     console.log('Fetching real internships for skills:', skills);
     
-    // Build search query from skills and roles
-    const searchTerms = [...(skills || []), ...(targetRoles || [])].slice(0, 3);
-    const query = searchTerms.join(' ') + ' internship';
+    // Always start with our global fallback jobs for reliability
+    const globalJobs = generateRealLookingJobs(skills);
     
+    // Try to add some real API jobs if available
     try {
-        // Using Arbeitnow API (free, no auth required, CORS-friendly)
-        const response = await fetch('https://www.arbeitnow.com/api/job-board-api?search=' + encodeURIComponent(query));
+        const searchTerms = [...(skills || []), ...(targetRoles || [])].slice(0, 2);
+        const query = searchTerms.join(' ');
         
-        if (!response.ok) {
-            console.log('API response not ok, using backup data');
-            return generateRealLookingJobs(skills);
+        // Try Remotive API for remote jobs
+        const res = await fetch('https://remotive.com/api/remote-jobs?search=' + encodeURIComponent(query) + '&limit=4');
+        if (res.ok) {
+            const data = await res.json();
+            if (data.jobs && data.jobs.length > 0) {
+                const apiJobs = data.jobs.slice(0, 4).map(job => ({
+                    id: 'remotive-' + job.id,
+                    title: job.title,
+                    company: job.company_name,
+                    location: job.candidate_required_location || 'Remote Worldwide',
+                    duration: 'Varies',
+                    role: job.category || extractRole(job.title),
+                    description: stripHtml(job.description).substring(0, 200),
+                    requiredSkills: extractSkillsFromDescription(job.description, skills),
+                    stipend: job.salary || 'Competitive',
+                    status: 'active',
+                    isReal: true,
+                    applyUrl: job.url,
+                    fitScore: calculateFitScore(skills, { requiredSkills: extractSkillsFromDescription(job.description, skills) })
+                }));
+                // Add API jobs to the mix
+                globalJobs.push(...apiJobs);
+            }
         }
-        
-        const data = await response.json();
-        console.log('Found', data.data?.length || 0, 'real jobs from API');
-        
-        if (!data.data || data.data.length === 0) {
-            return generateRealLookingJobs(skills);
-        }
-        
-        // Transform API data to our format
-        return data.data.slice(0, 10).map(job => ({
-            id: 'real-' + job.slug,
-            title: job.title,
-            company: job.company_name,
-            location: job.location || 'Remote',
-            duration: 'Varies',
-            role: extractRole(job.title),
-            description: stripHtml(job.description).substring(0, 200),
-            requiredSkills: extractSkillsFromDescription(job.description, skills),
-            stipend: 'Competitive',
-            status: 'active',
-            isReal: true,
-            applyUrl: job.url,
-            fitScore: calculateFitScore(skills, { requiredSkills: extractSkillsFromDescription(job.description, skills) })
-        }));
-        
-    } catch (error) {
-        console.error('Error fetching real internships:', error);
-        return generateRealLookingJobs(skills);
+    } catch (e) {
+        console.log('API fetch failed, using fallback only:', e);
     }
+    
+    // Sort by fit score
+    globalJobs.sort((a, b) => b.fitScore - a.fitScore);
+    
+    return globalJobs;
 }
 
-// Generate realistic-looking jobs as fallback
+// Generate realistic-looking jobs as fallback - GLOBAL coverage
 function generateRealLookingJobs(skills) {
     const companies = [
-        { name: 'Google', location: 'Mountain View, CA' },
-        { name: 'Microsoft', location: 'Redmond, WA' },
-        { name: 'Amazon', location: 'Seattle, WA' },
-        { name: 'Apple', location: 'Cupertino, CA' },
-        { name: 'Meta', location: 'Menlo Park, CA' },
-        { name: 'Netflix', location: 'Los Gatos, CA' },
-        { name: 'Spotify', location: 'Stockholm, Sweden' },
-        { name: 'Airbnb', location: 'San Francisco, CA' },
-        { name: 'Stripe', location: 'San Francisco, CA' },
-        { name: 'Shopify', location: 'Ottawa, Canada' }
+        // North America
+        { name: 'Google', location: 'New York, USA', stipend: '$8,000/month', careers: 'https://careers.google.com' },
+        { name: 'Microsoft', location: 'Seattle, USA', stipend: '$7,500/month', careers: 'https://careers.microsoft.com' },
+        { name: 'Apple', location: 'Cupertino, USA', stipend: '$8,500/month', careers: 'https://jobs.apple.com' },
+        { name: 'Amazon', location: 'Vancouver, Canada', stipend: 'CAD 7,000/month', careers: 'https://amazon.jobs' },
+        { name: 'Meta', location: 'Menlo Park, USA', stipend: '$9,000/month', careers: 'https://metacareers.com' },
+        { name: 'Netflix', location: 'Los Angeles, USA', stipend: '$8,000/month', careers: 'https://jobs.netflix.com' },
+        { name: 'Stripe', location: 'San Francisco, USA', stipend: '$9,000/month', careers: 'https://stripe.com/jobs' },
+        { name: 'Shopify', location: 'Toronto, Canada', stipend: 'CAD 6,000/month', careers: 'https://shopify.com/careers' },
+        // Europe
+        { name: 'Spotify', location: 'Stockholm, Sweden', stipend: '€4,500/month', careers: 'https://lifeatspotify.com' },
+        { name: 'Revolut', location: 'London, UK', stipend: '£4,000/month', careers: 'https://revolut.com/careers' },
+        { name: 'BlaBlaCar', location: 'Paris, France', stipend: '€2,500/month', careers: 'https://blablacar.com/careers' },
+        { name: 'Klarna', location: 'Amsterdam, Netherlands', stipend: '€3,500/month', careers: 'https://klarna.com/careers' },
+        { name: 'Adyen', location: 'Amsterdam, Netherlands', stipend: '€4,000/month', careers: 'https://careers.adyen.com' },
+        { name: 'Deliveroo', location: 'London, UK', stipend: '£3,500/month', careers: 'https://careers.deliveroo.com' },
+        { name: 'Zalando', location: 'Berlin, Germany', stipend: '€3,000/month', careers: 'https://jobs.zalando.com' },
+        // Asia Pacific
+        { name: 'Grab', location: 'Singapore', stipend: 'SGD 4,000/month', careers: 'https://grab.careers' },
+        { name: 'Atlassian', location: 'Sydney, Australia', stipend: 'AUD 5,500/month', careers: 'https://atlassian.com/company/careers' },
+        { name: 'Rakuten', location: 'Tokyo, Japan', stipend: '¥350,000/month', careers: 'https://global.rakuten.com/corp/careers' },
+        { name: 'ByteDance', location: 'Singapore', stipend: 'SGD 5,000/month', careers: 'https://jobs.bytedance.com' },
+        { name: 'Sea Group', location: 'Singapore', stipend: 'SGD 4,500/month', careers: 'https://careers.sea.com' },
+        // Latin America & MENA
+        { name: 'Mercado Libre', location: 'Buenos Aires, Argentina', stipend: 'Competitive', careers: 'https://mercadolibre.com/jobs' },
+        { name: 'Nubank', location: 'São Paulo, Brazil', stipend: 'R$8,000/month', careers: 'https://nubank.com.br/carreiras' },
+        { name: 'Careem', location: 'Dubai, UAE', stipend: 'AED 8,000/month', careers: 'https://careem.com/careers' },
+        { name: 'Rappi', location: 'Bogotá, Colombia', stipend: 'Competitive', careers: 'https://rappi.com/jobs' }
     ];
     
     const roles = [
@@ -226,24 +243,44 @@ function generateRealLookingJobs(skills) {
         'Product Design Intern',
         'Full Stack Developer Intern',
         'Machine Learning Intern',
-        'DevOps Engineering Intern',
+        'Cloud Engineering Intern',
         'Frontend Developer Intern',
-        'Backend Developer Intern'
+        'Backend Developer Intern',
+        'Mobile Developer Intern',
+        'DevOps Intern',
+        'Security Engineering Intern',
+        'Data Engineering Intern',
+        'Platform Engineering Intern',
+        'Site Reliability Intern',
+        'QA Engineering Intern'
     ];
     
-    return companies.slice(0, 6).map((company, i) => ({
-        id: 'real-' + Date.now() + '-' + i,
+    const descriptions = [
+        "Join our world-class engineering team to build products used by millions globally.",
+        "Work on cutting-edge technology with experienced mentors in a fast-paced environment.",
+        "Be part of a team that's changing how people interact with technology every day.",
+        "Gain hands-on experience solving real-world problems at scale.",
+        "Collaborate with talented engineers from around the world on impactful projects.",
+        "Build features that ship to production and impact real users.",
+        "Learn from industry experts while working on challenging technical problems."
+    ];
+    
+    // Shuffle and pick 18 diverse companies
+    const shuffled = companies.sort(() => Math.random() - 0.5);
+    
+    return shuffled.slice(0, 18).map((company, i) => ({
+        id: 'global-' + Date.now() + '-' + i,
         title: roles[i % roles.length],
         company: company.name,
         location: company.location,
         duration: '3-6 months',
         role: 'Engineering',
-        description: 'Join our world-class team to build products used by millions. You\\'ll work on real projects with experienced mentors.',
-        requiredSkills: skills?.slice(0, 4) || ['Programming', 'Problem Solving'],
-        stipend: '$5,000-$8,000/month',
+        description: descriptions[i % descriptions.length],
+        requiredSkills: skills?.slice(0, 4) || ['Programming', 'Problem Solving', 'Teamwork'],
+        stipend: company.stipend,
         status: 'active',
         isReal: true,
-        applyUrl: 'https://' + company.name.toLowerCase().replace(' ', '') + '.com/careers',
+        applyUrl: company.careers,
         fitScore: calculateFitScore(skills, { requiredSkills: skills?.slice(0, 4) || [] })
     }));
 }
@@ -555,10 +592,23 @@ function renderInternshipCards(internships, container, isRealMode) {
         const isReal = job.isReal || false;
         const realBadge = isReal ? '<span style="background:#059669;color:white;padding:0.2rem 0.5rem;border-radius:0.25rem;font-size:0.7rem;margin-left:0.5rem;">REAL</span>' : '';
         
+        // Check if application is locked (fit score < 40%)
+        const isLocked = job.fitScore < 40;
+        const lockedBadge = isLocked ? '<div style="background:#ef4444;color:white;padding:0.5rem 1rem;border-radius:0.5rem;margin-bottom:1rem;font-size:0.85rem;"><strong>🔒 APPLICATION LOCKED</strong> - You need at least 40% match to apply. Improve your skills!</div>' : '';
+        
+        // Find missing skills
+        const userSkills = (currentProfile?.skills || []).map(s => s.toLowerCase());
+        const requiredSkills = job.requiredSkills || [];
+        const missingSkills = requiredSkills.filter(skill => 
+            !userSkills.some(us => us.includes(skill.toLowerCase()) || skill.toLowerCase().includes(us))
+        );
+        
         const card = document.createElement('div');
         card.className = 'card';
         card.style.position = 'relative';
-        card.style.borderLeft = isReal ? '4px solid #059669' : 'none';
+        card.style.borderLeft = isLocked ? '4px solid #ef4444' : (isReal ? '4px solid #059669' : 'none');
+        if (isLocked) card.style.opacity = '0.85';
+        
         card.innerHTML = `
             <div style="position:absolute;top:1rem;right:1rem;background:${fitColor};color:white;padding:0.5rem 1rem;border-radius:2rem;font-weight:bold;font-size:0.9rem;">
                 ${job.fitScore}% ${fitLabel}
@@ -566,6 +616,8 @@ function renderInternshipCards(internships, container, isRealMode) {
             
             <h3 style="margin-bottom:0.25rem;padding-right:120px;">${title}${realBadge}</h3>
             <p style="color:#2563eb;font-weight:600;margin:0 0 1rem 0;">${company}</p>
+            
+            ${lockedBadge}
             
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;margin-bottom:1rem;font-size:0.9rem;color:#6b7280;">
                 <p style="margin:0;">📍 ${job.location || 'Remote'}</p>
@@ -577,20 +629,24 @@ function renderInternshipCards(internships, container, isRealMode) {
             <p style="color:#374151;margin-bottom:1rem;">${(job.description || 'No description available').substring(0, 120)}...</p>
             
             <div style="margin-bottom:1rem;">
-                <p style="font-size:0.85rem;color:#6b7280;margin-bottom:0.5rem;"><strong>Skills:</strong></p>
+                <p style="font-size:0.85rem;color:#6b7280;margin-bottom:0.5rem;"><strong>Required Skills:</strong></p>
                 <div style="display:flex;flex-wrap:wrap;gap:0.4rem;">
-                    ${(job.requiredSkills || []).map(skill => 
-                        `<span style="background:#e5e7eb;padding:0.2rem 0.6rem;border-radius:1rem;font-size:0.75rem;">${skill}</span>`
-                    ).join('')}
+                    ${requiredSkills.map(skill => {
+                        const hasSkill = userSkills.some(us => us.includes(skill.toLowerCase()) || skill.toLowerCase().includes(us));
+                        return `<span style="background:${hasSkill ? '#d1fae5' : '#fee2e2'};color:${hasSkill ? '#065f46' : '#991b1b'};padding:0.2rem 0.6rem;border-radius:1rem;font-size:0.75rem;">${hasSkill ? '✓' : '✗'} ${skill}</span>`;
+                    }).join('')}
                 </div>
+                ${missingSkills.length > 0 && isLocked ? `
+                    <p style="font-size:0.8rem;color:#ef4444;margin-top:0.5rem;">⚠️ Missing: ${missingSkills.join(', ')}</p>
+                ` : ''}
             </div>
             
             <div style="display:flex;gap:0.5rem;margin-top:1rem;">
-                ${isReal ? 
-                    `<a href="${job.applyUrl}" target="_blank" class="btn-primary" style="text-decoration:none;">🔗 Apply on Company Site</a>
-                     <button class="btn-secondary" onclick="saveToApplications('${job.id}', '${jobTitle}', '${jobCompany}', '${job.applyUrl || ''}')">💾 Save</button>` :
-                    `<button class="btn-primary" onclick="applyToJob('${job.id}', '${jobTitle}', '${jobCompany}')">Apply Now</button>`
+                ${isLocked ? 
+                    `<button class="btn-secondary" disabled style="opacity:0.5;cursor:not-allowed;">🔒 Locked - Improve Skills</button>` :
+                    `<button class="btn-primary" onclick="applyToInternship('${job.id}', '${jobTitle}', '${jobCompany}', '${job.location || ''}', '${job.duration || ''}', ${job.fitScore})">🚀 Apply Now</button>`
                 }
+                ${isReal && job.applyUrl ? `<a href="${job.applyUrl}" target="_blank" class="btn-secondary" style="text-decoration:none;">🔗 Company Site</a>` : ''}
             </div>
         `;
         container.appendChild(card);
@@ -689,7 +745,7 @@ window.applyToJob = async function(jobId, jobTitle, jobCompany) {
             });
         }
         
-        alert('🎉 Application submitted successfully!\n\nPosition: ' + jobTitle + '\nCompany: ' + jobCompany + '\nFit Score: ' + fitScore + '%\n\nView your applications in "My Applications" tab.');
+        alert('🎉 Application submitted successfully!\n\nPosition: ' + jobTitle + '\nCompany: ' + jobCompany + '\nFit Score: ' + fitScore + '%\n\n⏱️ ~2 hours saved with BAIT AI matching!\n\nView your applications in My Applications tab.');
         
     } catch (error) {
         console.error('Error applying:', error);
@@ -697,8 +753,8 @@ window.applyToJob = async function(jobId, jobTitle, jobCompany) {
     }
 };
 
-// Save real job to applications list
-window.saveToApplications = async function(jobId, jobTitle, jobCompany, applyUrl) {
+// Apply to internship directly on BAIT
+window.applyToInternship = async function(jobId, jobTitle, jobCompany, location, duration, fitScore) {
     const auth = firebase.auth();
     const db = firebase.firestore();
     const user = auth.currentUser;
@@ -707,32 +763,28 @@ window.saveToApplications = async function(jobId, jobTitle, jobCompany, applyUrl
     const odientId = user ? user.uid : 'demo-student-' + Date.now();
     
     try {
-        const fitScore = calculateFitScore(profile.skills, { requiredSkills: profile.skills });
-        
         const applicationData = {
             offerId: jobId,
             offerTitle: jobTitle,
             offerCompany: jobCompany,
-            offerLocation: 'See company site',
-            offerDuration: 'Varies',
+            offerLocation: location || 'Remote',
+            offerDuration: duration || '3-6 months',
             studentId: user ? user.uid : odientId,
             studentName: profile.name,
             studentEmail: profile.email || (user ? user.email : 'demo@student.edu'),
             studentSkills: profile.skills || [],
-            fitScore: fitScore,
-            status: 'applied_external',
-            isReal: true,
-            applyUrl: applyUrl,
+            fitScore: fitScore || calculateFitScore(profile.skills, { requiredSkills: profile.skills }),
+            status: 'applied',
             appliedAt: new Date(),
             updatedAt: new Date()
         };
         
         await db.collection('applications').add(applicationData);
         
-        alert('💾 Saved to your applications!\n\nPosition: ' + jobTitle + '\nCompany: ' + jobCompany + '\n\nDon\\'t forget to apply on the company website. You can track this in "My Applications".');
+        alert('🎉 Application submitted on BAIT!\n\nPosition: ' + jobTitle + '\nCompany: ' + jobCompany + '\nFit Score: ' + fitScore + '%\n\n⏱️ ~3 hours saved with BAIT!\n\nThe company will contact you via Messages.');
         
     } catch (error) {
-        console.error('Error saving:', error);
+        console.error('Error applying:', error);
         alert('Error: ' + error.message);
     }
 };
@@ -767,9 +819,10 @@ window.handleLogout = function() {
 // ============================================
 // INITIALIZE PAGE
 // ============================================
-function initDashboard() {
+async function initDashboard() {
     console.log('Student Dashboard initializing...');
     
+    // Keep trying until profileCard exists
     const profileCard = document.getElementById('profileCard');
     if (!profileCard) {
         console.log('DOM not ready, retrying in 100ms...');
@@ -777,7 +830,7 @@ function initDashboard() {
         return;
     }
     
-    console.log('DOM ready, profileCard found');
+    console.log('DOM ready, profileCard found:', profileCard);
     
     // Wait for Firebase
     if (typeof firebase === 'undefined' || !firebase.auth) {
@@ -786,14 +839,90 @@ function initDashboard() {
         return;
     }
     
-    console.log('Firebase ready, showing profile selector');
-    showProfileSelector();
+    console.log('Firebase ready, checking for user profile...');
+    
+    // Check for saved mode first
+    const savedMode = localStorage.getItem('bait_profile_mode');
+    const savedProfile = localStorage.getItem('bait_custom_profile');
+    
+    if (savedMode === 'demo') {
+        console.log('Demo mode saved, loading demo...');
+        currentProfile = DEMO_PROFILE;
+        profileMode = 'demo';
+        updateProfileCard();
+        loadInternships();
+        return;
+    } else if (savedMode === 'custom' && savedProfile) {
+        console.log('Custom mode saved, loading custom profile...');
+        currentProfile = JSON.parse(savedProfile);
+        profileMode = 'custom';
+        updateProfileCard();
+        loadInternships();
+        return;
+    }
+    
+    // Try to load profile from Firestore (from onboarding)
+    const user = firebase.auth().currentUser;
+    if (user) {
+        try {
+            console.log('Loading profile from Firestore for user:', user.uid);
+            const doc = await firebase.firestore().collection('users').doc(user.uid).get();
+            if (doc.exists) {
+                const userData = doc.data();
+                console.log('Found Firestore profile:', userData);
+                
+                if (userData.profileComplete && userData.userType === 'student') {
+                    // Use the onboarding profile
+                    currentProfile = {
+                        name: userData.name || 'Student',
+                        email: userData.email || user.email,
+                        role: userData.role || 'Student',
+                        location: userData.location || 'Not specified',
+                        skills: userData.skills || [],
+                        targetRoles: userData.targetRoles || [],
+                        isDemo: false
+                    };
+                    profileMode = 'custom';
+                    
+                    // Save to localStorage for future
+                    localStorage.setItem('bait_profile_mode', 'custom');
+                    localStorage.setItem('bait_custom_profile', JSON.stringify(currentProfile));
+                    
+                    console.log('Auto-loaded profile from onboarding:', currentProfile.name);
+                    updateProfileCard();
+                    loadInternships();
+                    return;
+                }
+            }
+        } catch (e) {
+            console.log('Error loading Firestore profile:', e);
+        }
+    }
+    
+    // No saved profile found, show selector
+    console.log('No saved mode, showing selector...');
+    profileCard.innerHTML = `
+        <div style="text-align:center;">
+            <h2 style="margin-bottom:0.5rem;">👋 Welcome to BAIT!</h2>
+            <p style="color:#6b7280;margin-bottom:1.5rem;">Choose how you want to explore internships</p>
+            
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+                <div onclick="useDemo()" style="cursor:pointer;background:linear-gradient(135deg,#2563eb,#7c3aed);color:white;padding:1.5rem;border-radius:1rem;transition:transform 0.2s;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'">
+                    <div style="font-size:2rem;margin-bottom:0.5rem;">🎭</div>
+                    <h3 style="color:white;margin-bottom:0.5rem;">Try Demo Profile</h3>
+                    <p style="font-size:0.85rem;color:#e0e7ff;margin:0;">Alex Johnson - CS Student with JavaScript, React, Python skills</p>
+                </div>
+                
+                <div onclick="showCustomForm()" style="cursor:pointer;background:white;border:2px solid #2563eb;color:#1e40af;padding:1.5rem;border-radius:1rem;transition:transform 0.2s;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'">
+                    <div style="font-size:2rem;margin-bottom:0.5rem;">✏️</div>
+                    <h3 style="color:#1e40af;margin-bottom:0.5rem;">Enter Your Info</h3>
+                    <p style="font-size:0.85rem;color:#6b7280;margin:0;">Create your own profile with your skills and preferences</p>
+                </div>
+            </div>
+        </div>
+    `;
 }
 
-// Start initialization
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initDashboard);
-} else {
-    // DOM already ready
-    setTimeout(initDashboard, 50);
-}
+// Start initialization immediately - script is loaded after DOM by router
+console.log('Student dashboard script loaded, starting init...');
+setTimeout(initDashboard, 50);

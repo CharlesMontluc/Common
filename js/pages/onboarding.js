@@ -91,10 +91,19 @@ window.submitProfile = async function(e) {
         if (window.selectedUserType === 'student') {
             const skillsInput = document.getElementById('skills');
             const targetRolesInput = document.getElementById('targetRoles');
+            const cvInput = document.getElementById('cv');
             
             profileData.skills = skillsInput && skillsInput.value ? skillsInput.value.split(',').map(s => s.trim()).filter(s => s) : [];
             profileData.targetRoles = targetRolesInput && targetRolesInput.value ? targetRolesInput.value.split(',').map(r => r.trim()).filter(r => r) : [];
             profileData.company = null;
+            
+            // Check if CV was uploaded
+            if (cvInput && cvInput.files && cvInput.files.length > 0) {
+                profileData.cvFileName = cvInput.files[0].name;
+                profileData.cvUploaded = true;
+            } else {
+                profileData.cvUploaded = false;
+            }
         } else {
             const companyInput = document.getElementById('company');
             profileData.company = companyInput ? companyInput.value : '';

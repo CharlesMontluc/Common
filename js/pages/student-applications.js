@@ -7,6 +7,7 @@
 
     const statusColors = {
         'pending': '#f59e0b',
+        'applied': '#10b981',
         'applied_external': '#6366f1',
         'interview': '#3b82f6',
         'offered': '#10b981',
@@ -18,6 +19,7 @@
 
     const statusLabels = {
         'pending': '⏳ Pending Review',
+        'applied': '✅ Applied on BAIT',
         'applied_external': '🔗 Applied Externally',
         'interview': '📅 Interview Scheduled',
         'offered': '🎉 Offer Received',

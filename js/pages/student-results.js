@@ -158,8 +158,28 @@
                 offerCompany: 'DesignHub Creative',
                 status: 'rejected',
                 fitScore: 45,
-                message: 'Thank you for your interest. After careful consideration, we have decided to move forward with candidates whose experience more closely matches our current needs.',
+                message: 'Thank you for your interest. After careful consideration, we have decided to move forward with other candidates.',
+                rejectionReasons: [
+                    'Missing required skill: Figma (consider taking a Figma course)',
+                    'Limited experience with user research methodologies',
+                    'Portfolio could include more case studies with process documentation',
+                    'Consider adding prototyping experience with tools like Principle or Framer'
+                ],
                 updatedAt: new Date(Date.now() - 259200000)
+            },
+            {
+                offerTitle: 'Machine Learning Intern',
+                offerCompany: 'AI Solutions Inc',
+                status: 'rejected',
+                fitScore: 38,
+                message: 'We appreciate your application but have decided to proceed with candidates whose qualifications more closely match our requirements.',
+                rejectionReasons: [
+                    'Missing required skill: TensorFlow or PyTorch (complete a deep learning course)',
+                    'Need more experience with Python data science libraries (NumPy, Pandas)',
+                    'Consider contributing to ML open-source projects to build portfolio',
+                    'Statistics and probability foundations could be strengthened'
+                ],
+                updatedAt: new Date(Date.now() - 345600000)
             }
         ];
         
@@ -185,6 +205,20 @@
                 });
             }
             
+            // Build rejection feedback HTML
+            let feedbackHtml = '';
+            if (result.status === 'rejected' && result.rejectionReasons && result.rejectionReasons.length > 0) {
+                feedbackHtml = `
+                    <div style="background:#fef2f2;border:1px solid #fecaca;padding:1rem;border-radius:0.5rem;margin-top:1rem;">
+                        <p style="margin:0 0 0.5rem 0;font-weight:600;color:#991b1b;">📋 Areas for Improvement:</p>
+                        <ul style="margin:0;padding-left:1.25rem;color:#7f1d1d;">
+                            ${result.rejectionReasons.map(r => `<li style="margin-bottom:0.25rem;font-size:0.9rem;">${r}</li>`).join('')}
+                        </ul>
+                        <p style="margin:0.75rem 0 0 0;font-size:0.85rem;color:#059669;">💡 <strong>Tip:</strong> Use these insights to strengthen your profile for future applications!</p>
+                    </div>
+                `;
+            }
+            
             const card = document.createElement('div');
             card.className = 'card';
             card.style.cssText = `border-left: 4px solid ${type.color}; background: ${type.bgColor};`;
@@ -205,6 +239,8 @@
                             <p style="margin:0;color:#374151;">${result.message || type.message}</p>
                         </div>
                         
+                        ${feedbackHtml}
+                        
                         ${result.status === 'interview' && result.interviewDate ? `
                             <div style="background:#f5f3ff;padding:0.75rem;border-radius:0.5rem;display:inline-flex;align-items:center;gap:0.5rem;margin-bottom:1rem;">
                                 <span>📅</span>
@@ -212,7 +248,7 @@
                             </div>
                         ` : ''}
                         
-                        <p style="color:#9ca3af;font-size:0.85rem;margin:0;">Received on ${dateStr}</p>
+                        <p style="color:#9ca3af;font-size:0.85rem;margin:${feedbackHtml ? '1rem' : '0'} 0 0 0;">Received on ${dateStr}</p>
                     </div>
                     
                     <div style="text-align:center;">
