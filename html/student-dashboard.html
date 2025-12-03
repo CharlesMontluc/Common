@@ -1,7 +1,7 @@
 <header>
     <div class="container">
         <nav class="flex-between">
-            <div class="logo">BAIT</div>
+            <a href="#/" class="logo" style="text-decoration:none;color:inherit;">BAIT</a>
             <div style="flex: 1; margin-left: 3rem;">
                 <ul class="nav-links">
                     <li><a href="#/student/dashboard">Home</a></li>
@@ -20,38 +20,33 @@
 <main>
     <div class="container">
         <div style="padding: 2rem 0;">
-            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem; margin-bottom: 2rem;">
                 <div>
-                    <h1>Browse Internship Offers</h1>
-                    <p>Find and apply to amazing internship opportunities</p>
+                    <h1 style="margin-bottom: 0.5rem;">🎯 Find Your Perfect Internship</h1>
+                    <p style="color: #6b7280;">AI-powered matching ranks internships based on your profile</p>
                 </div>
-                <button id="generateDataBtn" class="btn-secondary" onclick="generateSampleData()" style="white-space: nowrap;">
-                    🎲 Generate Sample Data
+                <button id="generateBtn" class="btn-primary" onclick="generateSampleData()" style="white-space: nowrap;">
+                    🎲 Generate Sample Internships
                 </button>
             </div>
 
-            <div style="margin: 2rem 0; display: flex; gap: 1rem; flex-wrap: wrap;">
-                <input type="text" id="searchInput" placeholder="Search by role..." style="flex: 1; min-width: 200px;">
-                <select id="locationFilter" style="padding: 0.75rem;">
-                    <option value="">All Locations</option>
-                    <option value="Paris">Paris</option>
-                    <option value="London">London</option>
-                    <option value="Berlin">Berlin</option>
-                    <option value="Amsterdam">Amsterdam</option>
-                    <option value="Barcelona">Barcelona</option>
-                    <option value="Dublin">Dublin</option>
-                </select>
-                <button class="btn-primary" onclick="filterOffers()">Filter</button>
-                <button class="btn-secondary" onclick="resetFilters()">Reset</button>
+            <div style="background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%); color: white; padding: 1.5rem; border-radius: 1rem; margin-bottom: 2rem;">
+                <p style="color: white; margin: 0; font-size: 0.95rem;">
+                    💡 <strong>Pro Tip:</strong> Update your profile with your skills to get better match percentages! 
+                    Internships are ranked by how well they match your profile.
+                </p>
             </div>
 
             <div id="offersContainer" class="grid grid-2">
-                <!-- Offers will be loaded here -->
+                <p style="text-align:center;padding:2rem;grid-column:1/-1;">Loading internships...</p>
             </div>
 
-            <div id="noOffers" class="text-center" style="padding: 2rem; display: none;">
-                <p style="margin-bottom: 1rem;">No internship offers found yet.</p>
-                <button class="btn-primary" onclick="generateSampleData()">🎲 Generate Sample Offers</button>
+            <div id="noOffers" class="text-center" style="padding: 3rem; display: none;">
+                <h3 style="margin-bottom: 1rem;">No internships found yet</h3>
+                <p style="margin-bottom: 1.5rem; color: #6b7280;">Click the button below to generate sample internship data for demo</p>
+                <button class="btn-primary btn-large" onclick="generateSampleData()">
+                    🎲 Generate Sample Internships
+                </button>
             </div>
         </div>
     </div>

@@ -1,45 +1,60 @@
-// Login page logic
+// Login Page
 
-function initLogin() {
-    const form = document.getElementById('loginForm');
+(function() {
+    console.log('Login page loaded');
     
+    const form = document.getElementById('loginForm');
     if (!form) {
         console.error('Login form not found');
         return;
     }
-
+    
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
-
+        
         const email = document.getElementById('email').value;
         const password = document.getElementById('password').value;
         const errorDiv = document.getElementById('formError');
-
+        const submitBtn = form.querySelector('button[type="submit"]');
+        
+        // Disable button
+        if (submitBtn) {
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Signing in...';
+        }
+        
         try {
-            console.log('Attempting login with:', email);
             errorDiv.style.display = 'none';
             
-            await authManager.signIn(email, password);
-            console.log('Login successful');
+            // Sign in with Firebase
+            const result = await auth.signInWithEmailAndPassword(email, password);
+            console.log('Login successful:', result.user.email);
             
-            // Redirect based on user type
-            if (authManager.isStudent()) {
-                console.log('Redirecting to student dashboard');
-                window.location.hash = '/student/dashboard';
-            } else if (authManager.isRecruiter()) {
-                console.log('Redirecting to recruiter dashboard');
-                window.location.hash = '/recruiter/dashboard';
+            // Get user profile to check type
+            const userDoc = await db.collection('users').doc(result.user.uid).get();
+            
+            if (userDoc.exists) {
+                const profile = userDoc.data();
+                if (profile.userType === 'student') {
+                    window.location.hash = '/student/dashboard';
+                } else if (profile.userType === 'recruiter') {
+                    window.location.hash = '/recruiter/dashboard';
+                } else {
+                    window.location.hash = '/onboarding';
+                }
             } else {
-                console.log('Redirecting to onboarding');
                 window.location.hash = '/onboarding';
             }
+            
         } catch (error) {
             console.error('Login error:', error);
             errorDiv.textContent = error.message;
             errorDiv.style.display = 'block';
+            
+            if (submitBtn) {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Sign In';
+            }
         }
     });
-}
-
-// Wait a tiny bit for DOM to be ready
-setTimeout(initLogin, 100);
+})();

@@ -1,30 +1,30 @@
-// Student Dashboard Logic
+// Student Dashboard - Internship Browser with AI Fit Scores
 
-// Sample internship data for demo
-const sampleOffers = [
+// ============================================
+// SAMPLE INTERNSHIP DATA (for demo purposes)
+// ============================================
+const SAMPLE_INTERNSHIPS = [
     {
         title: "Frontend Developer Intern",
-        company: "TechCorp",
+        company: "TechCorp Paris",
         role: "Frontend Development",
         location: "Paris, France",
         duration: "6 months",
         stipend: "€1,200/month",
-        description: "Join our dynamic team to build modern web applications using React and TypeScript. You'll work on real projects that impact millions of users.",
+        description: "Join our dynamic team to build modern web applications using React and TypeScript. You'll work on real projects that impact millions of users worldwide.",
         requiredSkills: ["JavaScript", "React", "HTML", "CSS", "TypeScript"],
-        responsibilities: ["Develop UI components", "Write unit tests", "Collaborate with designers"],
-        requirements: ["Currently enrolled in CS program", "Basic React knowledge"]
+        status: "active"
     },
     {
         title: "Data Science Intern",
-        company: "DataViz Inc",
+        company: "DataViz Analytics",
         role: "Data Analysis",
         location: "London, UK",
         duration: "4 months",
         stipend: "£1,500/month",
-        description: "Work with our data science team to analyze large datasets and build predictive models using Python and machine learning.",
+        description: "Work with our data science team to analyze large datasets, build predictive models, and create visualizations using Python and machine learning.",
         requiredSkills: ["Python", "Pandas", "Machine Learning", "SQL", "Statistics"],
-        responsibilities: ["Analyze datasets", "Build ML models", "Create visualizations"],
-        requirements: ["Statistics background", "Python proficiency"]
+        status: "active"
     },
     {
         title: "Product Management Intern",
@@ -35,87 +35,313 @@ const sampleOffers = [
         stipend: "€1,000/month",
         description: "Help shape the future of our product by conducting user research, defining requirements, and working closely with engineering teams.",
         requiredSkills: ["Product Strategy", "User Research", "Agile", "Communication", "Analytics"],
-        responsibilities: ["Conduct user interviews", "Write PRDs", "Prioritize features"],
-        requirements: ["Strong communication skills", "Interest in tech products"]
+        status: "active"
     },
     {
         title: "Backend Engineer Intern",
-        company: "CloudScale",
+        company: "CloudScale Systems",
         role: "Backend Development",
         location: "Amsterdam, Netherlands",
         duration: "6 months",
         stipend: "€1,400/month",
         description: "Build scalable backend services using Node.js and cloud technologies. Work on microservices architecture and API development.",
         requiredSkills: ["Node.js", "Python", "AWS", "Docker", "PostgreSQL"],
-        responsibilities: ["Design APIs", "Write backend services", "Optimize performance"],
-        requirements: ["Programming experience", "Database knowledge"]
+        status: "active"
     },
     {
         title: "UX/UI Design Intern",
-        company: "DesignHub",
+        company: "DesignHub Creative",
         role: "Design",
         location: "Barcelona, Spain",
         duration: "5 months",
         stipend: "€900/month",
-        description: "Create beautiful and intuitive user interfaces for web and mobile applications. Work with Figma and collaborate with developers.",
+        description: "Create beautiful and intuitive user interfaces for web and mobile apps. Work with Figma and collaborate with developers.",
         requiredSkills: ["Figma", "UI Design", "User Research", "Prototyping", "Adobe XD"],
-        responsibilities: ["Design mockups", "Create prototypes", "Conduct usability tests"],
-        requirements: ["Design portfolio", "Figma experience"]
+        status: "active"
     },
     {
-        title: "Marketing Intern",
-        company: "GrowthLab",
+        title: "Marketing Analytics Intern",
+        company: "GrowthLab Digital",
         role: "Digital Marketing",
         location: "Dublin, Ireland",
         duration: "4 months",
         stipend: "€1,100/month",
-        description: "Drive growth through digital marketing campaigns, social media management, and content creation for a fast-growing startup.",
+        description: "Drive growth through digital marketing campaigns, social media management, and data-driven content creation.",
         requiredSkills: ["Social Media", "Content Marketing", "SEO", "Google Analytics", "Copywriting"],
-        responsibilities: ["Manage social accounts", "Create content", "Analyze metrics"],
-        requirements: ["Marketing interest", "Creative mindset"]
+        status: "active"
+    },
+    {
+        title: "Mobile Developer Intern",
+        company: "AppWorks Studio",
+        role: "Mobile Development",
+        location: "Milan, Italy",
+        duration: "6 months",
+        stipend: "€1,150/month",
+        description: "Develop cross-platform mobile applications using React Native. Ship features used by thousands of users.",
+        requiredSkills: ["React Native", "JavaScript", "iOS", "Android", "Mobile UI"],
+        status: "active"
+    },
+    {
+        title: "DevOps Intern",
+        company: "InfraCloud Tech",
+        role: "DevOps Engineering",
+        location: "Stockholm, Sweden",
+        duration: "5 months",
+        stipend: "€1,300/month",
+        description: "Learn and implement CI/CD pipelines, container orchestration, and cloud infrastructure management.",
+        requiredSkills: ["Docker", "Kubernetes", "CI/CD", "Linux", "Terraform"],
+        status: "active"
     }
 ];
 
-// Calculate fit score based on student skills and offer requirements
-function calculateFitScore(studentProfile, offer) {
-    if (!studentProfile || !studentProfile.skills || studentProfile.skills.length === 0) {
-        // Return random score between 40-75 if no profile
-        return Math.floor(Math.random() * 35) + 40;
+// ============================================
+// AI FIT SCORE CALCULATOR
+// ============================================
+function calculateFitScore(studentSkills, internship) {
+    if (!studentSkills || studentSkills.length === 0) {
+        // Random score for demo if no skills
+        return Math.floor(Math.random() * 40) + 35; // 35-75%
     }
     
-    const studentSkills = studentProfile.skills.map(s => s.toLowerCase().trim());
-    const requiredSkills = (offer.requiredSkills || []).map(s => s.toLowerCase().trim());
+    const studentSkillsLower = studentSkills.map(s => s.toLowerCase().trim());
+    const requiredSkills = internship.requiredSkills.map(s => s.toLowerCase().trim());
     
-    if (requiredSkills.length === 0) {
-        return Math.floor(Math.random() * 20) + 60;
-    }
+    let matchScore = 0;
+    let partialMatches = 0;
     
-    let matchCount = 0;
-    for (const reqSkill of requiredSkills) {
-        for (const studentSkill of studentSkills) {
-            if (studentSkill.includes(reqSkill) || reqSkill.includes(studentSkill)) {
-                matchCount++;
+    for (const required of requiredSkills) {
+        for (const skill of studentSkillsLower) {
+            if (skill === required) {
+                matchScore += 2; // Exact match
+                break;
+            } else if (skill.includes(required) || required.includes(skill)) {
+                partialMatches += 1; // Partial match
                 break;
             }
         }
     }
     
-    // Base score from skill match (0-70%)
-    const skillScore = (matchCount / requiredSkills.length) * 70;
+    // Calculate percentage (max 100)
+    const maxScore = requiredSkills.length * 2;
+    const rawScore = ((matchScore + partialMatches * 0.5) / maxScore) * 80;
     
-    // Add some randomness for other factors (experience, location preference, etc.)
-    const randomBonus = Math.floor(Math.random() * 30);
+    // Add some randomness for other factors (experience, location, etc.)
+    const bonus = Math.floor(Math.random() * 20);
     
-    return Math.min(99, Math.floor(skillScore + randomBonus));
+    return Math.min(99, Math.max(25, Math.floor(rawScore + bonus)));
 }
 
-// Get color based on fit score
-function getFitScoreColor(score) {
-    if (score >= 80) return '#10b981'; // Green
-    if (score >= 60) return '#f59e0b'; // Yellow/Orange
-    return '#ef4444'; // Red
+function getFitColor(score) {
+    if (score >= 75) return '#10b981'; // Green - Great match
+    if (score >= 50) return '#f59e0b'; // Orange - Good match
+    return '#ef4444'; // Red - Low match
 }
 
+function getFitLabel(score) {
+    if (score >= 75) return 'Great Match!';
+    if (score >= 50) return 'Good Match';
+    return 'Explore';
+}
+
+// ============================================
+// PAGE FUNCTIONS
+// ============================================
+
+// Generate sample internships in Firestore
+window.generateSampleData = async function() {
+    const btn = document.getElementById('generateBtn');
+    if (btn) {
+        btn.disabled = true;
+        btn.textContent = 'Generating...';
+    }
+    
+    try {
+        console.log('Generating sample internships...');
+        
+        for (const internship of SAMPLE_INTERNSHIPS) {
+            await db.collection('offers').add({
+                ...internship,
+                recruiterId: 'demo-recruiter-' + Math.random().toString(36).substr(2, 9),
+                recruiterName: 'Demo Recruiter',
+                recruiterCompany: internship.company,
+                createdAt: new Date(),
+                updatedAt: new Date(),
+                applicantCount: Math.floor(Math.random() * 50)
+            });
+        }
+        
+        alert('✅ Generated ' + SAMPLE_INTERNSHIPS.length + ' sample internships!');
+        loadInternships();
+        
+    } catch (error) {
+        console.error('Error generating data:', error);
+        alert('Error: ' + error.message);
+    }
+    
+    if (btn) {
+        btn.disabled = false;
+        btn.textContent = '🎲 Generate Sample Internships';
+    }
+};
+
+// Load and display internships
+async function loadInternships() {
+    const container = document.getElementById('offersContainer');
+    const noOffers = document.getElementById('noOffers');
+    
+    if (!container) return;
+    
+    container.innerHTML = '<p style="text-align:center;padding:2rem;">Loading internships...</p>';
+    
+    try {
+        // Get student profile for fit calculation
+        let studentSkills = [];
+        const user = auth.currentUser;
+        
+        if (user) {
+            const userDoc = await db.collection('users').doc(user.uid).get();
+            if (userDoc.exists) {
+                studentSkills = userDoc.data().skills || [];
+                
+                // Update user name display
+                const userName = document.getElementById('userName');
+                if (userName) {
+                    userName.textContent = userDoc.data().name || 'Student';
+                }
+            }
+        }
+        
+        // Get all active internships
+        const snapshot = await db.collection('offers').where('status', '==', 'active').get();
+        
+        const internships = [];
+        snapshot.forEach(doc => {
+            const data = doc.data();
+            const fitScore = calculateFitScore(studentSkills, data);
+            internships.push({
+                id: doc.id,
+                ...data,
+                fitScore: fitScore
+            });
+        });
+        
+        // Sort by fit score (highest first) - AI RANKING
+        internships.sort((a, b) => b.fitScore - a.fitScore);
+        
+        console.log('Loaded', internships.length, 'internships');
+        
+        if (internships.length === 0) {
+            container.innerHTML = '';
+            if (noOffers) noOffers.style.display = 'block';
+            return;
+        }
+        
+        if (noOffers) noOffers.style.display = 'none';
+        container.innerHTML = '';
+        
+        // Render internship cards
+        for (const job of internships) {
+            const fitColor = getFitColor(job.fitScore);
+            const fitLabel = getFitLabel(job.fitScore);
+            
+            const card = document.createElement('div');
+            card.className = 'card';
+            card.style.position = 'relative';
+            card.innerHTML = `
+                <div style="position:absolute;top:1rem;right:1rem;background:${fitColor};color:white;padding:0.5rem 1rem;border-radius:2rem;font-weight:bold;font-size:0.9rem;">
+                    ${job.fitScore}% ${fitLabel}
+                </div>
+                
+                <h3 style="margin-bottom:0.25rem;padding-right:120px;">${job.title}</h3>
+                <p style="color:#2563eb;font-weight:600;margin:0 0 1rem 0;">${job.company}</p>
+                
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;margin-bottom:1rem;font-size:0.9rem;color:#6b7280;">
+                    <p style="margin:0;">📍 ${job.location}</p>
+                    <p style="margin:0;">⏱️ ${job.duration}</p>
+                    <p style="margin:0;">💼 ${job.role}</p>
+                    <p style="margin:0;">💰 ${job.stipend || 'Competitive'}</p>
+                </div>
+                
+                <p style="color:#374151;margin-bottom:1rem;">${(job.description || '').substring(0, 120)}...</p>
+                
+                <div style="margin-bottom:1rem;">
+                    <p style="font-size:0.85rem;color:#6b7280;margin-bottom:0.5rem;"><strong>Skills:</strong></p>
+                    <div style="display:flex;flex-wrap:wrap;gap:0.4rem;">
+                        ${(job.requiredSkills || []).map(skill => 
+                            `<span style="background:#e5e7eb;padding:0.2rem 0.6rem;border-radius:1rem;font-size:0.75rem;">${skill}</span>`
+                        ).join('')}
+                    </div>
+                </div>
+                
+                <div style="display:flex;gap:0.5rem;margin-top:1rem;">
+                    <button class="btn-primary" onclick="applyToJob('${job.id}', '${job.title.replace(/'/g, "\\'")}')">
+                        Apply Now
+                    </button>
+                    <button class="btn-secondary" onclick="viewDetails('${job.id}')">
+                        View Details
+                    </button>
+                </div>
+            `;
+            container.appendChild(card);
+        }
+        
+    } catch (error) {
+        console.error('Error loading internships:', error);
+        container.innerHTML = '<p style="color:red;text-align:center;padding:2rem;">Error loading internships. Please refresh.</p>';
+    }
+}
+
+// Apply to a job
+window.applyToJob = async function(jobId, jobTitle) {
+    const user = auth.currentUser;
+    
+    if (!user) {
+        alert('Please log in to apply');
+        window.location.hash = '/login';
+        return;
+    }
+    
+    try {
+        // Check if already applied
+        const existing = await db.collection('applications')
+            .where('offerId', '==', jobId)
+            .where('studentId', '==', user.uid)
+            .get();
+        
+        if (!existing.empty) {
+            alert('You have already applied to this internship!');
+            return;
+        }
+        
+        // Get user profile
+        const userDoc = await db.collection('users').doc(user.uid).get();
+        const profile = userDoc.exists ? userDoc.data() : {};
+        
+        // Create application
+        await db.collection('applications').add({
+            offerId: jobId,
+            studentId: user.uid,
+            studentName: profile.name || 'Unknown',
+            studentEmail: user.email,
+            studentSkills: profile.skills || [],
+            status: 'pending',
+            appliedAt: new Date()
+        });
+        
+        alert('🎉 Application submitted for: ' + jobTitle);
+        
+    } catch (error) {
+        console.error('Error applying:', error);
+        alert('Error: ' + error.message);
+    }
+};
+
+// View job details
+window.viewDetails = function(jobId) {
+    alert('Job details page coming soon!\nJob ID: ' + jobId);
+};
+
+// Logout
 window.handleLogout = async function() {
     try {
         await auth.signOut();
@@ -125,206 +351,26 @@ window.handleLogout = async function() {
     }
 };
 
-// Generate sample offers
-window.generateSampleData = async function() {
-    try {
-        const user = auth.currentUser;
-        if (!user) {
-            alert('You must be logged in');
-            return;
-        }
-        
-        const btn = document.getElementById('generateDataBtn');
-        if (btn) {
-            btn.disabled = true;
-            btn.textContent = 'Generating...';
-        }
-        
-        // Add sample offers to Firestore
-        for (const offer of sampleOffers) {
-            await db.collection('offers').add({
-                ...offer,
-                recruiterId: 'demo-recruiter',
-                recruiterName: 'Demo Recruiter',
-                recruiterCompany: offer.company,
-                createdAt: new Date(),
-                updatedAt: new Date(),
-                status: 'active',
-                applicantCount: Math.floor(Math.random() * 20)
+// ============================================
+// INITIALIZE PAGE
+// ============================================
+(function init() {
+    console.log('Student Dashboard initializing...');
+    
+    // Wait for auth to be ready
+    const checkAuth = setInterval(() => {
+        if (typeof auth !== 'undefined') {
+            clearInterval(checkAuth);
+            
+            auth.onAuthStateChanged(user => {
+                if (user) {
+                    console.log('User logged in:', user.email);
+                    loadInternships();
+                } else {
+                    console.log('No user, showing demo data');
+                    loadInternships();
+                }
             });
         }
-        
-        alert('Sample internship offers generated!');
-        await loadOffers();
-        
-        if (btn) {
-            btn.disabled = false;
-            btn.textContent = '🎲 Generate Sample Data';
-        }
-    } catch (error) {
-        console.error('Error generating sample data:', error);
-        alert('Error: ' + error.message);
-    }
-};
-
-async function loadOffers() {
-    try {
-        console.log('Loading offers...');
-        const container = document.getElementById('offersContainer');
-        const noOffers = document.getElementById('noOffers');
-
-        if (!container) {
-            console.error('Offers container not found');
-            return;
-        }
-
-        // Get student profile for fit score calculation
-        const studentProfile = authManager.currentUserProfile;
-
-        // Get all offers from Firestore
-        const snapshot = await db.collection('offers').where('status', '==', 'active').get();
-        const offers = [];
-        snapshot.forEach(doc => {
-            offers.push({ id: doc.id, ...doc.data() });
-        });
-
-        console.log('Loaded offers:', offers.length);
-
-        if (offers.length === 0) {
-            container.innerHTML = '';
-            if (noOffers) noOffers.style.display = 'block';
-            return;
-        }
-
-        container.innerHTML = '';
-        if (noOffers) noOffers.style.display = 'none';
-
-        // Sort by fit score (highest first)
-        const offersWithScores = offers.map(offer => ({
-            ...offer,
-            fitScore: calculateFitScore(studentProfile, offer)
-        })).sort((a, b) => b.fitScore - a.fitScore);
-
-        for (const offer of offersWithScores) {
-            const fitColor = getFitScoreColor(offer.fitScore);
-            
-            const card = document.createElement('div');
-            card.className = 'card';
-            card.innerHTML = `
-                <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem;">
-                    <div>
-                        <h3 style="margin-bottom: 0.25rem;">${offer.title || 'Untitled Offer'}</h3>
-                        <p style="color: #2563eb; font-weight: 500; margin: 0;">${offer.company || offer.recruiterCompany || 'Company'}</p>
-                    </div>
-                    <div style="background: ${fitColor}; color: white; padding: 0.5rem 1rem; border-radius: 2rem; font-weight: 600; font-size: 0.9rem; white-space: nowrap;">
-                        ${offer.fitScore}% Match
-                    </div>
-                </div>
-
-                <div style="margin-bottom: 1rem; font-size: 0.9rem; color: #6b7280;">
-                    <p style="margin: 0.25rem 0;"><strong>Role:</strong> ${offer.role || 'N/A'}</p>
-                    <p style="margin: 0.25rem 0;"><strong>Location:</strong> ${offer.location || 'N/A'}</p>
-                    <p style="margin: 0.25rem 0;"><strong>Duration:</strong> ${offer.duration || 'N/A'}</p>
-                    ${offer.stipend ? `<p style="margin: 0.25rem 0;"><strong>Stipend:</strong> ${offer.stipend}</p>` : ''}
-                </div>
-
-                <p style="color: #374151; margin-bottom: 1rem;">${(offer.description || 'No description available.').substring(0, 150)}${offer.description?.length > 150 ? '...' : ''}</p>
-
-                <div style="margin-bottom: 1rem;">
-                    <p style="font-size: 0.85rem; color: #6b7280; margin-bottom: 0.5rem;"><strong>Required Skills:</strong></p>
-                    <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
-                        ${(offer.requiredSkills || []).slice(0, 5).map(skill => 
-                            `<span style="background: #e5e7eb; padding: 0.25rem 0.75rem; border-radius: 1rem; font-size: 0.8rem;">${skill}</span>`
-                        ).join('')}
-                    </div>
-                </div>
-
-                <div style="display: flex; gap: 0.5rem;">
-                    <button class="btn-primary" onclick="viewOffer('${offer.id}')">
-                        View Details
-                    </button>
-                    <button class="btn-success" onclick="applyForOffer('${offer.id}')">
-                        Apply Now
-                    </button>
-                </div>
-            `;
-            container.appendChild(card);
-        }
-    } catch (error) {
-        console.error('Error loading offers:', error);
-        const container = document.getElementById('offersContainer');
-        if (container) {
-            container.innerHTML = '<p>Error loading offers. Please try again.</p>';
-        }
-    }
-}
-
-window.filterOffers = async function() {
-    await loadOffers();
-};
-
-window.resetFilters = async function() {
-    const searchInput = document.getElementById('searchInput');
-    const locationFilter = document.getElementById('locationFilter');
-    if (searchInput) searchInput.value = '';
-    if (locationFilter) locationFilter.value = '';
-    await loadOffers();
-};
-
-window.viewOffer = function(offerId) {
-    window.location.hash = `/student/offer/${offerId}`;
-};
-
-window.applyForOffer = async function(offerId) {
-    try {
-        const user = auth.currentUser;
-        if (!user) {
-            alert('You must be logged in to apply');
-            return;
-        }
-        
-        // Check if already applied
-        const existing = await db.collection('applications')
-            .where('offerId', '==', offerId)
-            .where('studentId', '==', user.uid)
-            .get();
-            
-        if (!existing.empty) {
-            alert('You have already applied to this offer!');
-            return;
-        }
-        
-        // Create application in Firestore
-        await db.collection('applications').add({
-            offerId: offerId,
-            studentId: user.uid,
-            studentName: authManager.currentUserProfile?.name || 'Unknown',
-            studentEmail: user.email,
-            studentSkills: authManager.currentUserProfile?.skills || [],
-            status: 'pending',
-            appliedAt: new Date()
-        });
-
-        alert('Application submitted successfully! 🎉');
-    } catch (error) {
-        console.error('Error applying:', error);
-        alert('Error submitting application: ' + error.message);
-    }
-};
-
-// Initialize
-function initStudentDashboard() {
-    console.log('Initializing student dashboard');
-    
-    auth.onAuthStateChanged(user => {
-        if (user) {
-            const userName = document.getElementById('userName');
-            if (userName && authManager.currentUserProfile) {
-                userName.textContent = authManager.currentUserProfile.name || 'Student';
-            }
-            loadOffers();
-        }
-    });
-}
-
-setTimeout(initStudentDashboard, 100);
+    }, 100);
+})();
