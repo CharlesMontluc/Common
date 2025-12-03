@@ -13,15 +13,27 @@ class Router {
 
     // Navigate to a page
     async navigate(path) {
-        // Check if user is authenticated
-        if (!authManager.isAuthenticated() && !['/', '/login', '/signup'].includes(path)) {
+        console.log('Router.navigate called with path:', path);
+        
+        // Allow public routes without authentication
+        const publicRoutes = ['/', '/login', '/signup', '/onboarding'];
+        
+        // Check if user is authenticated for protected routes
+        if (!publicRoutes.includes(path) && !authManager.isAuthenticated()) {
+            console.log('Not authenticated, redirecting to login');
             window.location.hash = '/login';
             return;
         }
 
         if (!this.routes[path]) {
-            console.warn(`Route not found: ${path}`);
+            console.warn(`Route not found: ${path}, redirecting to /`);
             window.location.hash = '/';
+            return;
+        }
+
+        // Don't re-navigate to the same page
+        if (this.currentPage === path) {
+            console.log('Already on this page, skipping');
             return;
         }
 
@@ -42,25 +54,13 @@ class Router {
             // Load and execute script if provided
             if (route.scriptFile) {
                 const script = document.createElement('script');
-                script.src = route.scriptFile;
-                // DO NOT use type="module" - scripts need access to global variables
+                script.src = route.scriptFile + '?t=' + Date.now(); // Cache bust
                 document.body.appendChild(script);
-                
-                // Wait for script to load before continuing
-                await new Promise((resolve) => {
-                    script.onload = resolve;
-                    script.onerror = resolve; // Resolve even on error to not block navigation
-                });
             }
         } catch (error) {
             console.error('Navigation error:', error);
             document.getElementById('root').innerHTML = '<h1>Error loading page: ' + error.message + '</h1>';
         }
-    }
-
-    // Navigate to a path (alias)
-    navigateTo(path) {
-        window.location.hash = path;
     }
 }
 
@@ -96,13 +96,8 @@ function setupRoutes() {
 }
 
 // Handle hash-based navigation
-window.addEventListener('hashchange', () => {
-    const path = window.location.hash.slice(1) || '/';
-    router.navigate(path);
-});
-
-// Handle browser back/forward buttons
-window.addEventListener('popstate', () => {
+window.addEventListener('hashchange', (e) => {
+    console.log('Hash changed:', window.location.hash);
     const path = window.location.hash.slice(1) || '/';
     router.navigate(path);
 });

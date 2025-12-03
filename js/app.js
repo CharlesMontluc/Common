@@ -4,36 +4,39 @@ document.addEventListener('DOMContentLoaded', async () => {
     console.log('BAIT - Initializing Application');
 
     try {
+        // Setup routes first
+        setupRoutes();
+        
         // Initialize auth
         await authManager.init();
 
-        // Setup routes
-        setupRoutes();
-
-        // Navigate to initial page based on hash
+        // Get current path from hash
         const path = window.location.hash.slice(1) || '/';
+        console.log('Initial path:', path);
         
-        if (authManager.isAuthenticated()) {
-            // Route authenticated users to their dashboard
-            if (authManager.isStudent()) {
-                await router.navigate('/student/dashboard');
+        // Public routes that don't need auth check
+        const publicRoutes = ['/', '/login', '/signup'];
+        
+        if (publicRoutes.includes(path)) {
+            // Just navigate to the requested public page
+            await router.navigate(path);
+        } else if (authManager.isAuthenticated()) {
+            // Authenticated user trying to access protected route
+            if (path === '/onboarding' || !authManager.currentUserProfile?.profileComplete) {
+                await router.navigate('/onboarding');
+            } else if (authManager.isStudent()) {
+                await router.navigate(path.startsWith('/student') ? path : '/student/dashboard');
             } else if (authManager.isRecruiter()) {
-                await router.navigate('/recruiter/dashboard');
+                await router.navigate(path.startsWith('/recruiter') ? path : '/recruiter/dashboard');
             } else {
-                // Profile not complete, go to onboarding
                 await router.navigate('/onboarding');
             }
         } else {
-            // Route unauthenticated users
-            if (path === '/' || path === '/login' || path === '/signup' || path === '/onboarding') {
-                await router.navigate(path);
-            } else {
-                await router.navigate('/');
-            }
+            // Not authenticated and trying to access protected route
+            await router.navigate('/');
         }
     } catch (error) {
         console.error('App initialization error:', error);
-        // Fallback: show landing page on error
         await router.navigate('/');
     }
 });
