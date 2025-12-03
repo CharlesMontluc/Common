@@ -4,9 +4,9 @@
             <div class="logo">BAIT</div>
             <div style="flex: 1; margin-left: 3rem;">
                 <ul class="nav-links">
-                    <li><a href="#" onclick="router.navigate('/student/dashboard')">Home</a></li>
-                    <li><a href="#" onclick="router.navigate('/student/applications')">My Applications</a></li>
-                    <li><a href="#" onclick="router.navigate('/student/profile')">Profile</a></li>
+                    <li><a href="#/student/dashboard">Home</a></li>
+                    <li><a href="#/student/applications">My Applications</a></li>
+                    <li><a href="#/student/profile">Profile</a></li>
                 </ul>
             </div>
             <div class="nav-right">
@@ -18,7 +18,7 @@
 
 <main>
     <div class="container" style="max-width: 900px; padding: 2rem 1rem;">
-        <button class="btn-secondary" onclick="router.navigate('/student/dashboard')">← Back to Offers</button>
+        <button class="btn-secondary" onclick="window.location.hash='/student/dashboard'">← Back to Offers</button>
 
         <div id="offerContainer" style="margin-top: 2rem;">
             <!-- Offer details will be loaded here -->

@@ -25,13 +25,13 @@ function initLogin() {
             // Redirect based on user type
             if (authManager.isStudent()) {
                 console.log('Redirecting to student dashboard');
-                router.navigate('/student/dashboard');
+                window.location.hash = '/student/dashboard';
             } else if (authManager.isRecruiter()) {
                 console.log('Redirecting to recruiter dashboard');
-                router.navigate('/recruiter/dashboard');
+                window.location.hash = '/recruiter/dashboard';
             } else {
                 console.log('Redirecting to onboarding');
-                router.navigate('/onboarding');
+                window.location.hash = '/onboarding';
             }
         } catch (error) {
             console.error('Login error:', error);

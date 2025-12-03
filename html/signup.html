@@ -1,9 +1,9 @@
 <header>
     <div class="container">
         <nav>
-            <div class="logo">BAIT</div>
+            <div class="logo" style="cursor:pointer" onclick="window.location.hash='/'">BAIT</div>
             <div class="nav-right">
-                <a href="#" onclick="router.navigate('/')">Home</a>
+                <a href="#/" onclick="event.preventDefault(); window.location.hash='/'">Home</a>
             </div>
         </nav>
     </div>
@@ -40,7 +40,7 @@
             </form>
 
             <p style="text-align: center; margin-top: 2rem;">
-                Already have an account? <a href="#" onclick="router.navigate('/login')">Sign In</a>
+                Already have an account? <a href="#/login" onclick="event.preventDefault(); window.location.hash='/login'">Sign In</a>
             </p>
         </div>
     </div>

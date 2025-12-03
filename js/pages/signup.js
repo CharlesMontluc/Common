@@ -39,7 +39,7 @@ function initSignup() {
             console.log('Attempting signup with:', email);
             await authManager.signUp(email, password);
             console.log('Signup successful, navigating to onboarding');
-            router.navigate('/onboarding');
+            window.location.hash = '/onboarding';
         } catch (error) {
             console.error('Signup error:', error);
             errorDiv.textContent = error.message;

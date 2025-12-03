@@ -4,8 +4,8 @@
             <div class="logo">BAIT</div>
             <div style="flex: 1; margin-left: 3rem;">
                 <ul class="nav-links">
-                    <li><a href="#" onclick="router.navigate('/recruiter/dashboard')">Dashboard</a></li>
-                    <li><a href="#" onclick="router.navigate('/recruiter/offers')">My Offers</a></li>
+                    <li><a href="#/recruiter/dashboard">Dashboard</a></li>
+                    <li><a href="#/recruiter/offers">My Offers</a></li>
                 </ul>
             </div>
             <div class="nav-right">
@@ -17,7 +17,7 @@
 
 <main>
     <div class="container" style="max-width: 1000px; padding: 2rem 1rem;">
-        <button class="btn-secondary" onclick="router.navigate('/recruiter/dashboard')">← Back to Dashboard</button>
+        <button class="btn-secondary" onclick="window.location.hash='/recruiter/dashboard'">← Back to Dashboard</button>
 
         <div id="offerContainer" style="margin-top: 2rem;">
             <!-- Offer form will be loaded here -->

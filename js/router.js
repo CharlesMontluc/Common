@@ -15,13 +15,13 @@ class Router {
     async navigate(path) {
         // Check if user is authenticated
         if (!authManager.isAuthenticated() && !['/', '/login', '/signup'].includes(path)) {
-            this.navigateTo('/login');
+            window.location.hash = '/login';
             return;
         }
 
         if (!this.routes[path]) {
             console.warn(`Route not found: ${path}`);
-            this.navigateTo('/');
+            window.location.hash = '/';
             return;
         }
 
@@ -52,9 +52,6 @@ class Router {
                     script.onerror = resolve; // Resolve even on error to not block navigation
                 });
             }
-
-            // Update URL using hash-based routing
-            window.location.hash = path;
         } catch (error) {
             console.error('Navigation error:', error);
             document.getElementById('root').innerHTML = '<h1>Error loading page: ' + error.message + '</h1>';
@@ -63,12 +60,17 @@ class Router {
 
     // Navigate to a path (alias)
     navigateTo(path) {
-        this.navigate(path);
+        window.location.hash = path;
     }
 }
 
 // Create global router instance
 const router = new Router();
+
+// Global navigation function for onclick handlers
+window.navigateTo = function(path) {
+    window.location.hash = path;
+};
 
 // Register all routes
 function setupRoutes() {

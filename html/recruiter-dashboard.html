@@ -4,8 +4,8 @@
             <div class="logo">BAIT</div>
             <div style="flex: 1; margin-left: 3rem;">
                 <ul class="nav-links">
-                    <li><a href="#" onclick="router.navigate('/recruiter/dashboard')">Dashboard</a></li>
-                    <li><a href="#" onclick="router.navigate('/recruiter/offers')">My Offers</a></li>
+                    <li><a href="#/recruiter/dashboard">Dashboard</a></li>
+                    <li><a href="#/recruiter/offers">My Offers</a></li>
                 </ul>
             </div>
             <div class="nav-right">
@@ -38,7 +38,7 @@
 
             <div style="margin: 2rem 0;">
                 <h2>Your Offers</h2>
-                <button class="btn-primary" onclick="router.navigate('/recruiter/offer/new')">+ Create New Offer</button>
+                <button class="btn-primary" onclick="window.location.hash='/recruiter/offer/new'">+ Create New Offer</button>
             </div>
 
             <div id="offersContainer" class="grid grid-2">
@@ -47,7 +47,7 @@
 
             <div id="noOffers" class="text-center" style="padding: 2rem; display: none;">
                 <p>You haven't created any offers yet.</p>
-                <button class="btn-primary" onclick="router.navigate('/recruiter/offer/new')">Create Your First Offer</button>
+                <button class="btn-primary" onclick="window.location.hash='/recruiter/offer/new'">Create Your First Offer</button>
             </div>
         </div>
     </div>

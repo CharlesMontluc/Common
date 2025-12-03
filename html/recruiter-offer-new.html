@@ -4,8 +4,8 @@
             <div class="logo">BAIT</div>
             <div style="flex: 1; margin-left: 3rem;">
                 <ul class="nav-links">
-                    <li><a href="#" onclick="router.navigate('/recruiter/dashboard')">Dashboard</a></li>
-                    <li><a href="#" onclick="router.navigate('/recruiter/offers')">My Offers</a></li>
+                    <li><a href="#/recruiter/dashboard">Dashboard</a></li>
+                    <li><a href="#/recruiter/offers">My Offers</a></li>
                 </ul>
             </div>
             <div class="nav-right">
@@ -72,7 +72,7 @@
 
                 <div style="display: flex; gap: 1rem;">
                     <button type="submit" class="btn-primary" style="flex: 1;">Create Offer</button>
-                    <button type="button" class="btn-secondary" onclick="router.navigate('/recruiter/dashboard')" style="flex: 1;">Cancel</button>
+                    <button type="button" class="btn-secondary" onclick="window.location.hash='/recruiter/dashboard'" style="flex: 1;">Cancel</button>
                 </div>
             </form>
         </div>

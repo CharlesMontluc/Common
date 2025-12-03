@@ -4,8 +4,8 @@
             <div class="logo">BAIT</div>
             <div style="flex: 1; margin-left: 3rem;">
                 <ul class="nav-links">
-                    <li><a href="#" onclick="router.navigate('/recruiter/dashboard')">Dashboard</a></li>
-                    <li><a href="#" onclick="router.navigate('/recruiter/offers')">My Offers</a></li>
+                    <li><a href="#/recruiter/dashboard">Dashboard</a></li>
+                    <li><a href="#/recruiter/offers">My Offers</a></li>
                 </ul>
             </div>
             <div class="nav-right">
@@ -20,7 +20,7 @@
         <div style="padding: 2rem 0;">
             <h1>My Internship Offers</h1>
             
-            <button class="btn-primary" onclick="router.navigate('/recruiter/offer/new')" style="margin-bottom: 2rem;">
+            <button class="btn-primary" onclick="window.location.hash='/recruiter/offer/new'" style="margin-bottom: 2rem;">
                 + Create New Offer
             </button>
 
@@ -30,7 +30,7 @@
 
             <div id="noOffers" class="text-center" style="padding: 2rem; display: none;">
                 <p>You haven't created any offers yet.</p>
-                <button class="btn-primary" onclick="router.navigate('/recruiter/offer/new')">Create Your First Offer</button>
+                <button class="btn-primary" onclick="window.location.hash='/recruiter/offer/new'">Create Your First Offer</button>
             </div>
         </div>
     </div>

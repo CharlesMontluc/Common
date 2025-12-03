@@ -4,9 +4,9 @@
             <div class="logo">BAIT</div>
             <div style="flex: 1; margin-left: 3rem;">
                 <ul class="nav-links">
-                    <li><a href="#" onclick="router.navigate('/student/dashboard')">Home</a></li>
-                    <li><a href="#" onclick="router.navigate('/student/applications')">My Applications</a></li>
-                    <li><a href="#" onclick="router.navigate('/student/profile')">Profile</a></li>
+                    <li><a href="#/student/dashboard">Home</a></li>
+                    <li><a href="#/student/applications">My Applications</a></li>
+                    <li><a href="#/student/profile">Profile</a></li>
                 </ul>
             </div>
             <div class="nav-right">
@@ -49,7 +49,7 @@
             <h2>Target Internship Roles</h2>
             <div id="rolesList" style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 2rem;"></div>
 
-            <button class="btn-primary" onclick="router.navigate('/student/dashboard')">Back to Offers</button>
+            <button class="btn-primary" onclick="window.location.hash='/student/dashboard'">Back to Offers</button>
         </div>
     </div>
 </main>
