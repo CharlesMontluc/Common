@@ -21,9 +21,9 @@
         <div style="padding: 2rem 0;">
             <h1>Recruiter Dashboard</h1>
 
-            <div class="grid grid-3" style="margin: 2rem 0;">
+            <div class="grid grid-4" style="margin: 2rem 0;">
                 <div class="card text-center">
-                    <h3 id="totalOffers">0</h3>
+                    <h3 id="totalOffers" style="color:#2563eb;">0</h3>
                     <p style="color: var(--gray-600);">Active Offers</p>
                 </div>
                 <div class="card text-center">
@@ -31,26 +31,62 @@
                     <p style="color: var(--gray-600);">Total Applications</p>
                 </div>
                 <div class="card text-center">
-                    <h3 id="pendingApplications">0</h3>
+                    <h3 id="pendingApplications" style="color:#f59e0b;">0</h3>
                     <p style="color: var(--gray-600);">Pending Review</p>
                 </div>
-            </div>
-
-            <div style="margin: 2rem 0; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
-                <h2 style="margin: 0;">Your Offers</h2>
-                <div style="display: flex; gap: 0.5rem;">
-                    <button class="btn-secondary" onclick="generateRecruiterOffers()">🎲 Add Sample Offers</button>
-                    <button class="btn-primary" onclick="window.location.hash='/recruiter/offer/new'">+ Create New Offer</button>
+                <div class="card text-center">
+                    <h3 id="offersExtended" style="color:#059669;">0</h3>
+                    <p style="color: var(--gray-600);">Offers Extended</p>
                 </div>
             </div>
 
-            <div id="offersContainer" class="grid grid-2">
-                <!-- Offers will be loaded here -->
+            <!-- Tab Navigation -->
+            <div style="display:flex;gap:0.5rem;margin-bottom:1.5rem;border-bottom:2px solid #e5e7eb;padding-bottom:0;">
+                <button id="tabOffers" class="tab-btn active" onclick="showRecruiterTab('offers')" style="padding:0.75rem 1.5rem;border:none;background:none;font-weight:600;color:#2563eb;border-bottom:2px solid #2563eb;margin-bottom:-2px;cursor:pointer;">📋 My Offers</button>
+                <button id="tabApplications" class="tab-btn" onclick="showRecruiterTab('applications')" style="padding:0.75rem 1.5rem;border:none;background:none;font-weight:500;color:#6b7280;cursor:pointer;">📥 Applications</button>
+                <button id="tabOffered" class="tab-btn" onclick="showRecruiterTab('offered')" style="padding:0.75rem 1.5rem;border:none;background:none;font-weight:500;color:#6b7280;cursor:pointer;">✅ Offers Extended</button>
             </div>
 
-            <div id="noOffers" class="text-center" style="padding: 2rem; display: none;">
-                <p>You haven't created any offers yet.</p>
-                <button class="btn-primary" onclick="window.location.hash='/recruiter/offer/new'">Create Your First Offer</button>
+            <!-- Tab: My Offers -->
+            <div id="panelOffers">
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1rem;">
+                    <h2 style="margin: 0;">Your Offers</h2>
+                    <div style="display: flex; gap: 0.5rem;">
+                        <button class="btn-secondary" onclick="generateRecruiterOffers()">🎲 Add Sample Offers</button>
+                        <button class="btn-primary" onclick="window.location.hash='/recruiter/offer/new'">+ Create New Offer</button>
+                    </div>
+                </div>
+
+                <div id="offersContainer" class="grid grid-2">
+                    <!-- Offers will be loaded here -->
+                </div>
+
+                <div id="noOffers" class="text-center" style="padding: 2rem; display: none;">
+                    <p>You haven't created any offers yet.</p>
+                    <button class="btn-primary" onclick="window.location.hash='/recruiter/offer/new'">Create Your First Offer</button>
+                </div>
+            </div>
+
+            <!-- Tab: Applications -->
+            <div id="panelApplications" style="display:none;">
+                <h2 style="margin-bottom:1rem;">All Applications</h2>
+                <div id="applicationsContainer" class="grid grid-2">
+                    <!-- Applications will be loaded here -->
+                </div>
+                <div id="noApplications" class="text-center" style="padding: 2rem; display: none;">
+                    <p>No applications received yet.</p>
+                </div>
+            </div>
+
+            <!-- Tab: Offers Extended -->
+            <div id="panelOffered" style="display:none;">
+                <h2 style="margin-bottom:1rem;">Offers Extended to Candidates</h2>
+                <div id="offeredContainer" class="grid grid-2">
+                    <!-- Offered candidates will be loaded here -->
+                </div>
+                <div id="noOffered" class="text-center" style="padding: 2rem; display: none;">
+                    <p>You haven't extended any offers yet. Review applications and make offers to qualified candidates!</p>
+                </div>
             </div>
         </div>
     </div>

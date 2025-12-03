@@ -646,11 +646,11 @@ function renderInternshipCards(internships, container, isRealMode) {
         if (isLocked) card.style.opacity = '0.85';
         
         card.innerHTML = `
-            <div style="position:absolute;top:1rem;right:1rem;background:${fitColor};color:white;padding:0.5rem 1rem;border-radius:2rem;font-weight:bold;font-size:0.9rem;">
-                ${job.fitScore}% ${fitLabel}
+            <div style="position:absolute;top:0.75rem;right:0.75rem;background:${fitColor};color:white;padding:0.3rem 0.6rem;border-radius:1rem;font-weight:600;font-size:0.7rem;">
+                ${job.fitScore}%
             </div>
             
-            <h3 style="margin-bottom:0.25rem;padding-right:120px;">${title}${realBadge}</h3>
+            <h3 style="margin-bottom:0.25rem;padding-right:60px;">${title}${realBadge}</h3>
             <p style="color:#2563eb;font-weight:600;margin:0 0 0.5rem 0;">${company}${gradeBadge}</p>
             
             ${lockedBadge}
