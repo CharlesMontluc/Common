@@ -620,8 +620,6 @@ function renderInternshipCards(internships, container, isRealMode) {
         const company = job.company || job.recruiterCompany || 'Unknown Company';
         const jobTitle = title.replace(/'/g, "\\'");
         const jobCompany = company.replace(/'/g, "\\'");
-        const isReal = job.isReal || false;
-        const realBadge = isReal ? '<span style="background:#059669;color:white;padding:0.2rem 0.5rem;border-radius:0.25rem;font-size:0.7rem;margin-left:0.5rem;">REAL</span>' : '';
         
         // Company grade badge
         const companyGrade = job.companyGrade || null;
@@ -642,7 +640,7 @@ function renderInternshipCards(internships, container, isRealMode) {
         const card = document.createElement('div');
         card.className = 'card';
         card.style.position = 'relative';
-        card.style.borderLeft = isLocked ? '4px solid #ef4444' : (isReal ? '4px solid #059669' : 'none');
+        card.style.borderLeft = isLocked ? '4px solid #ef4444' : 'none';
         if (isLocked) card.style.opacity = '0.85';
         
         card.innerHTML = `
@@ -650,7 +648,7 @@ function renderInternshipCards(internships, container, isRealMode) {
                 ${job.fitScore}%
             </div>
             
-            <h3 style="margin-bottom:0.25rem;padding-right:60px;">${title}${realBadge}</h3>
+            <h3 style="margin-bottom:0.25rem;padding-right:60px;">${title}</h3>
             <p style="color:#2563eb;font-weight:600;margin:0 0 0.5rem 0;">${company}${gradeBadge}</p>
             
             ${lockedBadge}
@@ -682,7 +680,7 @@ function renderInternshipCards(internships, container, isRealMode) {
                     `<button class="btn-secondary" disabled style="opacity:0.5;cursor:not-allowed;">🔒 Locked - Improve Skills</button>` :
                     `<button class="btn-primary" onclick="applyToInternship('${job.id}', '${jobTitle}', '${jobCompany}', '${job.location || ''}', '${job.duration || ''}', ${job.fitScore})">🚀 Apply Now</button>`
                 }
-                ${isReal && job.applyUrl ? `<a href="${job.applyUrl}" target="_blank" class="btn-secondary" style="text-decoration:none;">🔗 Company Site</a>` : ''}
+                ${job.applyUrl ? `<a href="${job.applyUrl}" target="_blank" class="btn-secondary" style="text-decoration:none;">🔗 Company Site</a>` : ''}
             </div>
         `;
         container.appendChild(card);
