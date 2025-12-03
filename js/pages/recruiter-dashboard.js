@@ -113,6 +113,13 @@ async function loadDashboard() {
 function initRecruiterDashboard() {
     console.log('Initializing recruiter dashboard');
     
+    // Wait for auth to be ready
+    if (!authManager.currentUser) {
+        console.log('Waiting for auth...');
+        setTimeout(initRecruiterDashboard, 200);
+        return;
+    }
+    
     const companyName = document.getElementById('companyName');
     if (companyName && authManager.currentUserProfile) {
         companyName.textContent = authManager.currentUserProfile.company || 'Recruiter';
@@ -121,4 +128,4 @@ function initRecruiterDashboard() {
     loadDashboard();
 }
 
-setTimeout(initRecruiterDashboard, 100);
+setTimeout(initRecruiterDashboard, 200);
