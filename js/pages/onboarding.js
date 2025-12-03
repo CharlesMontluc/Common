@@ -50,6 +50,7 @@ function initOnboarding() {
 
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
+        console.log('Profile form submitted');
 
         if (!selectedUserType) {
             alert('Please select a user type');
@@ -63,6 +64,8 @@ function initOnboarding() {
 
         try {
             console.log('Creating profile for:', selectedUserType);
+            console.log('Current user:', authManager.currentUser);
+            
             errorDiv.style.display = 'none';
 
             const profileData = {
@@ -95,21 +98,30 @@ function initOnboarding() {
                 }
             } else {
                 const company = document.getElementById('company').value;
+                if (!company) {
+                    throw new Error('Company name is required for recruiters');
+                }
                 profileData.company = company;
             }
 
+            console.log('Profile data:', profileData);
             await authManager.createUserProfile(profileData);
             console.log('Profile created successfully');
 
+            // Small delay to ensure Firestore write completes
+            await new Promise(resolve => setTimeout(resolve, 500));
+
             // Redirect to dashboard
             if (selectedUserType === 'student') {
+                console.log('Navigating to student dashboard');
                 router.navigate('/student/dashboard');
             } else {
+                console.log('Navigating to recruiter dashboard');
                 router.navigate('/recruiter/dashboard');
             }
         } catch (error) {
             console.error('Onboarding error:', error);
-            errorDiv.textContent = error.message;
+            errorDiv.textContent = 'Error: ' + (error.message || error);
             errorDiv.style.display = 'block';
         }
     });
