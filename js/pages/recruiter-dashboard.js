@@ -1,5 +1,68 @@
 // Recruiter Dashboard Logic
 
+// Sample offers for recruiters
+const recruiterSampleOffers = [
+    {
+        title: "Software Engineering Intern",
+        role: "Full Stack Development",
+        location: "Paris, France",
+        duration: "6 months",
+        stipend: "€1,300/month",
+        description: "Join our engineering team to build scalable web applications. Work with modern technologies like React, Node.js, and cloud services.",
+        requiredSkills: ["JavaScript", "React", "Node.js", "Git", "SQL"]
+    },
+    {
+        title: "Business Analyst Intern",
+        role: "Business Analysis",
+        location: "London, UK",
+        duration: "4 months",
+        stipend: "£1,200/month",
+        description: "Help analyze business processes, gather requirements, and work with stakeholders to improve our operations.",
+        requiredSkills: ["Excel", "SQL", "Communication", "Problem Solving", "PowerPoint"]
+    },
+    {
+        title: "Machine Learning Intern",
+        role: "AI/ML",
+        location: "Berlin, Germany",
+        duration: "6 months",
+        stipend: "€1,500/month",
+        description: "Work on cutting-edge ML projects, train models, and deploy AI solutions in production environments.",
+        requiredSkills: ["Python", "TensorFlow", "Machine Learning", "Data Analysis", "Statistics"]
+    }
+];
+
+window.generateSampleOffers = async function() {
+    try {
+        const user = auth.currentUser;
+        if (!user) {
+            alert('You must be logged in');
+            return;
+        }
+        
+        const company = authManager.currentUserProfile?.company || 'Your Company';
+        
+        for (const offer of recruiterSampleOffers) {
+            await db.collection('offers').add({
+                ...offer,
+                company: company,
+                recruiterId: user.uid,
+                recruiterName: authManager.currentUserProfile?.name || 'Recruiter',
+                recruiterCompany: company,
+                createdAt: new Date(),
+                updatedAt: new Date(),
+                status: 'active',
+                applicantCount: 0
+            });
+        }
+        
+        alert('Sample offers created! 🎉');
+        await loadDashboard();
+    } catch (error) {
+        console.error('Error generating sample offers:', error);
+        alert('Error: ' + error.message);
+    }
+};
+
 window.handleLogout = async function() {
     try {
         await auth.signOut();

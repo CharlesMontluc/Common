@@ -20,13 +20,26 @@
 <main>
     <div class="container">
         <div style="padding: 2rem 0;">
-            <h1>Browse Internship Offers</h1>
-            <p>Find and apply to amazing internship opportunities</p>
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+                <div>
+                    <h1>Browse Internship Offers</h1>
+                    <p>Find and apply to amazing internship opportunities</p>
+                </div>
+                <button id="generateDataBtn" class="btn-secondary" onclick="generateSampleData()" style="white-space: nowrap;">
+                    🎲 Generate Sample Data
+                </button>
+            </div>
 
             <div style="margin: 2rem 0; display: flex; gap: 1rem; flex-wrap: wrap;">
                 <input type="text" id="searchInput" placeholder="Search by role..." style="flex: 1; min-width: 200px;">
                 <select id="locationFilter" style="padding: 0.75rem;">
                     <option value="">All Locations</option>
+                    <option value="Paris">Paris</option>
+                    <option value="London">London</option>
+                    <option value="Berlin">Berlin</option>
+                    <option value="Amsterdam">Amsterdam</option>
+                    <option value="Barcelona">Barcelona</option>
+                    <option value="Dublin">Dublin</option>
                 </select>
                 <button class="btn-primary" onclick="filterOffers()">Filter</button>
                 <button class="btn-secondary" onclick="resetFilters()">Reset</button>
@@ -37,7 +50,8 @@
             </div>
 
             <div id="noOffers" class="text-center" style="padding: 2rem; display: none;">
-                <p>No internship offers found. Check back soon!</p>
+                <p style="margin-bottom: 1rem;">No internship offers found yet.</p>
+                <button class="btn-primary" onclick="generateSampleData()">🎲 Generate Sample Offers</button>
             </div>
         </div>
     </div>
