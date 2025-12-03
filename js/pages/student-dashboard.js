@@ -1,104 +1,111 @@
 // Student Dashboard Logic
 
-async function handleLogout() {
+window.handleLogout = async function() {
     try {
         await authManager.signOut();
-        router.navigate('/login');
+        window.location.hash = '/login';
     } catch (error) {
         console.error('Logout error:', error);
     }
-}
+};
 
 async function loadOffers() {
     try {
-        const offers = await OffersService.getAllOffers();
+        console.log('Loading offers...');
         const container = document.getElementById('offersContainer');
         const noOffers = document.getElementById('noOffers');
 
+        if (!container) {
+            console.error('Offers container not found');
+            return;
+        }
+
+        // Get all offers from Firestore
+        const snapshot = await db.collection('offers').get();
+        const offers = [];
+        snapshot.forEach(doc => {
+            offers.push({ id: doc.id, ...doc.data() });
+        });
+
+        console.log('Loaded offers:', offers.length);
+
         if (offers.length === 0) {
             container.innerHTML = '';
-            noOffers.style.display = 'block';
+            if (noOffers) noOffers.style.display = 'block';
             return;
         }
 
         container.innerHTML = '';
-        noOffers.style.display = 'none';
+        if (noOffers) noOffers.style.display = 'none';
 
         for (const offer of offers) {
-            const fitScore = FitScoreCalculator.calculateFitScore(authManager.currentUserProfile, offer);
-            const fitColor = FitScoreCalculator.getFitScoreColor(fitScore);
-            const fitLabel = FitScoreCalculator.getFitScoreLabel(fitScore);
-
-            const hasApplied = await ApplicationsService.hasApplied(authManager.currentUser.uid, offer.id);
-
             const card = document.createElement('div');
             card.className = 'card';
             card.innerHTML = `
                 <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem;">
                     <div>
-                        <h3>${offer.title}</h3>
-                        <p style="color: var(--primary); font-weight: 500;">${offer.recruiterCompany}</p>
-                    </div>
-                    <div style="background: ${fitColor}; color: white; padding: 0.5rem 1rem; border-radius: 0.5rem; text-align: center;">
-                        <div style="font-weight: 700; font-size: 1.25rem;">${fitScore}%</div>
-                        <div style="font-size: 0.75rem;">${fitLabel} Fit</div>
+                        <h3>${offer.title || 'Untitled Offer'}</h3>
+                        <p style="color: #2563eb; font-weight: 500;">${offer.company || offer.recruiterCompany || 'Company'}</p>
                     </div>
                 </div>
 
                 <div style="margin-bottom: 1rem;">
-                    <p><strong>Role:</strong> ${offer.role}</p>
-                    <p><strong>Location:</strong> ${offer.location}</p>
-                    <p><strong>Duration:</strong> ${offer.duration}</p>
+                    <p><strong>Role:</strong> ${offer.role || 'N/A'}</p>
+                    <p><strong>Location:</strong> ${offer.location || 'N/A'}</p>
+                    <p><strong>Duration:</strong> ${offer.duration || 'N/A'}</p>
                 </div>
 
-                <p>${offer.description}</p>
+                <p>${offer.description || 'No description available.'}</p>
 
                 <div style="margin: 1rem 0;">
-                    <p><strong>Required Skills:</strong> ${(offer.requiredSkills || []).join(', ')}</p>
+                    <p><strong>Required Skills:</strong> ${(offer.requiredSkills || []).join(', ') || 'N/A'}</p>
                 </div>
 
                 <button class="btn-primary" onclick="viewOffer('${offer.id}')" style="margin-right: 0.5rem;">
                     View Details
                 </button>
-                ${hasApplied ? `
-                    <button class="btn-secondary" disabled>
-                        ✓ Applied
-                    </button>
-                ` : `
-                    <button class="btn-success" onclick="applyForOffer('${offer.id}')">
-                        Apply Now
-                    </button>
-                `}
+                <button class="btn-success" onclick="applyForOffer('${offer.id}')">
+                    Apply Now
+                </button>
             `;
             container.appendChild(card);
         }
     } catch (error) {
         console.error('Error loading offers:', error);
-        alert('Error loading offers: ' + error.message);
+        const container = document.getElementById('offersContainer');
+        if (container) {
+            container.innerHTML = '<p>No offers available yet. Check back soon!</p>';
+        }
     }
 }
 
-async function filterOffers() {
-    // TODO: Implement filtering
+window.filterOffers = async function() {
     await loadOffers();
-}
+};
 
-async function resetFilters() {
-    document.getElementById('searchInput').value = '';
-    document.getElementById('locationFilter').value = '';
+window.resetFilters = async function() {
+    const searchInput = document.getElementById('searchInput');
+    const locationFilter = document.getElementById('locationFilter');
+    if (searchInput) searchInput.value = '';
+    if (locationFilter) locationFilter.value = '';
     await loadOffers();
-}
+};
 
-function viewOffer(offerId) {
-    router.navigate(`/student/offer/${offerId}`);
-}
+window.viewOffer = function(offerId) {
+    window.location.hash = `/student/offer/${offerId}`;
+};
 
-async function applyForOffer(offerId) {
+window.applyForOffer = async function(offerId) {
     try {
-        const offer = await OffersService.getOffer(offerId);
-        const fitScore = FitScoreCalculator.calculateFitScore(authManager.currentUserProfile, offer);
-
-        await OffersService.addApplicant(offerId, authManager.currentUser.uid, fitScore);
+        // Create application in Firestore
+        await db.collection('applications').add({
+            offerId: offerId,
+            studentId: authManager.currentUser.uid,
+            studentName: authManager.currentUserProfile?.name || 'Unknown',
+            studentEmail: authManager.currentUser.email,
+            status: 'pending',
+            appliedAt: new Date()
+        });
 
         alert('Application submitted successfully!');
         await loadOffers();
@@ -106,10 +113,18 @@ async function applyForOffer(offerId) {
         console.error('Error applying:', error);
         alert('Error submitting application: ' + error.message);
     }
-}
+};
 
 // Initialize
-document.addEventListener('DOMContentLoaded', async () => {
-    document.getElementById('userName').textContent = authManager.currentUserProfile?.name || 'User';
-    await loadOffers();
-});
+function initStudentDashboard() {
+    console.log('Initializing student dashboard');
+    
+    const userName = document.getElementById('userName');
+    if (userName && authManager.currentUserProfile) {
+        userName.textContent = authManager.currentUserProfile.name || 'User';
+    }
+    
+    loadOffers();
+}
+
+setTimeout(initStudentDashboard, 100);
