@@ -8,6 +8,7 @@ const ROUTES = {
     '/student/dashboard': 'html/student-dashboard.html',
     '/student/profile': 'html/student-profile.html',
     '/student/applications': 'html/student-applications.html',
+    '/student/results': 'html/student-results.html',
     '/recruiter/dashboard': 'html/recruiter-dashboard.html',
     '/recruiter/offers': 'html/recruiter-offers.html',
     '/recruiter/offer/new': 'html/recruiter-offer-new.html'
@@ -21,6 +22,7 @@ const SCRIPTS = {
     '/student/dashboard': 'js/pages/student-dashboard.js',
     '/student/profile': 'js/pages/student-profile.js',
     '/student/applications': 'js/pages/student-applications.js',
+    '/student/results': 'js/pages/student-results.js',
     '/recruiter/dashboard': 'js/pages/recruiter-dashboard.js',
     '/recruiter/offers': 'js/pages/recruiter-offers.js',
     '/recruiter/offer/new': 'js/pages/recruiter-offer-new.js'

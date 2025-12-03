@@ -1,17 +1,18 @@
 <header>
     <div class="container">
         <nav class="flex-between">
-            <a href="#/" class="logo" style="text-decoration:none;color:inherit;">BAIT</a>
+            <a href="#/login" class="logo" style="text-decoration:none;color:inherit;cursor:pointer;">BAIT</a>
             <div style="flex: 1; margin-left: 3rem;">
                 <ul class="nav-links">
                     <li><a href="#/student/dashboard">Home</a></li>
                     <li><a href="#/student/applications">My Applications</a></li>
+                    <li><a href="#/student/results">Results</a></li>
                     <li><a href="#/student/profile">Profile</a></li>
                 </ul>
             </div>
             <div class="nav-right">
                 <span id="userName" style="margin-right: 1rem;"></span>
-                <button class="btn-secondary btn-small" onclick="handleLogout()">Sign Out</button>
+                <button class="btn-secondary btn-small" onclick="window.handleLogout()">Sign Out</button>
             </div>
         </nav>
     </div>
@@ -30,12 +31,19 @@
                 </button>
             </div>
 
+            <!-- Demo Profile Card -->
+            <div id="profileCard" class="card" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border: 2px solid #0ea5e9; margin-bottom: 2rem;">
+                <p style="text-align:center;color:#6b7280;">Loading profile...</p>
+            </div>
+
             <div style="background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%); color: white; padding: 1.5rem; border-radius: 1rem; margin-bottom: 2rem;">
                 <p style="color: white; margin: 0; font-size: 0.95rem;">
-                    💡 <strong>Pro Tip:</strong> Update your profile with your skills to get better match percentages! 
-                    Internships are ranked by how well they match your profile.
+                    💡 <strong>How it works:</strong> Internships are ranked by how well they match your skills. 
+                    Green = Great Match (75%+) | Orange = Good Match (50-74%) | Red = Explore (<50%)
                 </p>
             </div>
+
+            <h2 style="margin-bottom: 1rem;">📋 Available Internships</h2>
 
             <div id="offersContainer" class="grid grid-2">
                 <p style="text-align:center;padding:2rem;grid-column:1/-1;">Loading internships...</p>
