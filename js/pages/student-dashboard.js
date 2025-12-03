@@ -30,7 +30,9 @@ const SAMPLE_INTERNSHIPS = [
         stipend: "€1,200/month",
         description: "Join our dynamic team to build modern web applications using React and TypeScript. You'll work on real projects that impact millions of users worldwide.",
         requiredSkills: ["JavaScript", "React", "HTML", "CSS", "TypeScript"],
-        status: "active"
+        status: "active",
+        companyGrade: "B+",
+        gradeReason: "Good mentorship, fair pay"
     },
     {
         title: "Data Science Intern",
@@ -41,7 +43,9 @@ const SAMPLE_INTERNSHIPS = [
         stipend: "£1,500/month",
         description: "Work with our data science team to analyze large datasets, build predictive models, and create visualizations using Python and machine learning.",
         requiredSkills: ["Python", "Pandas", "Machine Learning", "SQL", "Statistics"],
-        status: "active"
+        status: "active",
+        companyGrade: "A-",
+        gradeReason: "Excellent learning, good pay"
     },
     {
         title: "Product Management Intern",
@@ -52,7 +56,9 @@ const SAMPLE_INTERNSHIPS = [
         stipend: "€1,000/month",
         description: "Help shape the future of our product by conducting user research, defining requirements, and working closely with engineering teams.",
         requiredSkills: ["Product Strategy", "User Research", "Agile", "Communication", "Analytics"],
-        status: "active"
+        status: "active",
+        companyGrade: "C+",
+        gradeReason: "Startup culture, lower pay"
     },
     {
         title: "Backend Engineer Intern",
@@ -63,7 +69,9 @@ const SAMPLE_INTERNSHIPS = [
         stipend: "€1,400/month",
         description: "Build scalable backend services using Node.js and cloud technologies. Work on microservices architecture and API development.",
         requiredSkills: ["Node.js", "Python", "AWS", "Docker", "PostgreSQL"],
-        status: "active"
+        status: "active",
+        companyGrade: "B",
+        gradeReason: "Good technical depth"
     },
     {
         title: "UX/UI Design Intern",
@@ -74,7 +82,9 @@ const SAMPLE_INTERNSHIPS = [
         stipend: "€900/month",
         description: "Create beautiful and intuitive user interfaces for web and mobile apps. Work with Figma and collaborate with developers.",
         requiredSkills: ["Figma", "UI Design", "User Research", "Prototyping", "Adobe XD"],
-        status: "active"
+        status: "active",
+        companyGrade: "B-",
+        gradeReason: "Creative work, lower pay"
     },
     {
         title: "Marketing Analytics Intern",
@@ -85,7 +95,9 @@ const SAMPLE_INTERNSHIPS = [
         stipend: "€1,100/month",
         description: "Drive growth through digital marketing campaigns, social media management, and data-driven content creation.",
         requiredSkills: ["Social Media", "Content Marketing", "SEO", "Google Analytics", "Copywriting"],
-        status: "active"
+        status: "active",
+        companyGrade: "C",
+        gradeReason: "Average program quality"
     },
     {
         title: "Mobile Developer Intern",
@@ -96,7 +108,9 @@ const SAMPLE_INTERNSHIPS = [
         stipend: "€1,150/month",
         description: "Develop cross-platform mobile applications using React Native. Ship features used by thousands of users.",
         requiredSkills: ["React Native", "JavaScript", "iOS", "Android", "Mobile UI"],
-        status: "active"
+        status: "active",
+        companyGrade: "B",
+        gradeReason: "Hands-on experience, good team"
     },
     {
         title: "DevOps Intern",
@@ -107,7 +121,9 @@ const SAMPLE_INTERNSHIPS = [
         stipend: "€1,300/month",
         description: "Learn and implement CI/CD pipelines, container orchestration, and cloud infrastructure management.",
         requiredSkills: ["Docker", "Kubernetes", "CI/CD", "Linux", "Terraform"],
-        status: "active"
+        status: "active",
+        companyGrade: "A",
+        gradeReason: "Excellent mentorship, great WLB"
     }
 ];
 
@@ -205,36 +221,37 @@ async function fetchRealInternships(skills, targetRoles) {
 }
 
 // Generate realistic-looking jobs as fallback - GLOBAL coverage
+// Company grades based on: Pay, Learning, Mentorship, Return Offer Rate, Work-Life Balance
 function generateRealLookingJobs(skills) {
     const companies = [
-        // North America
-        { name: 'Google', location: 'New York, USA', stipend: '$8,000/month', careers: 'https://careers.google.com' },
-        { name: 'Microsoft', location: 'Seattle, USA', stipend: '$7,500/month', careers: 'https://careers.microsoft.com' },
-        { name: 'Apple', location: 'Cupertino, USA', stipend: '$8,500/month', careers: 'https://jobs.apple.com' },
-        { name: 'Amazon', location: 'Vancouver, Canada', stipend: 'CAD 7,000/month', careers: 'https://amazon.jobs' },
-        { name: 'Meta', location: 'Menlo Park, USA', stipend: '$9,000/month', careers: 'https://metacareers.com' },
-        { name: 'Netflix', location: 'Los Angeles, USA', stipend: '$8,000/month', careers: 'https://jobs.netflix.com' },
-        { name: 'Stripe', location: 'San Francisco, USA', stipend: '$9,000/month', careers: 'https://stripe.com/jobs' },
-        { name: 'Shopify', location: 'Toronto, Canada', stipend: 'CAD 6,000/month', careers: 'https://shopify.com/careers' },
+        // North America - Top Tier (A-S)
+        { name: 'Google', location: 'New York, USA', stipend: '$8,000/month', careers: 'https://careers.google.com', grade: 'A+', gradeReason: 'Top pay, world-class mentorship, great WLB' },
+        { name: 'Microsoft', location: 'Seattle, USA', stipend: '$7,500/month', careers: 'https://careers.microsoft.com', grade: 'A', gradeReason: 'Excellent mentorship, great culture' },
+        { name: 'Apple', location: 'Cupertino, USA', stipend: '$8,500/month', careers: 'https://jobs.apple.com', grade: 'A', gradeReason: 'High pay, prestigious brand' },
+        { name: 'Amazon', location: 'Vancouver, Canada', stipend: 'CAD 7,000/month', careers: 'https://amazon.jobs', grade: 'B+', gradeReason: 'Great pay but intense culture' },
+        { name: 'Meta', location: 'Menlo Park, USA', stipend: '$9,000/month', careers: 'https://metacareers.com', grade: 'A', gradeReason: 'Top pay, fast-paced learning' },
+        { name: 'Netflix', location: 'Los Angeles, USA', stipend: '$8,000/month', careers: 'https://jobs.netflix.com', grade: 'A-', gradeReason: 'High autonomy, excellent pay' },
+        { name: 'Stripe', location: 'San Francisco, USA', stipend: '$9,000/month', careers: 'https://stripe.com/jobs', grade: 'A+', gradeReason: 'Best intern program, top mentorship' },
+        { name: 'Shopify', location: 'Toronto, Canada', stipend: 'CAD 6,000/month', careers: 'https://shopify.com/careers', grade: 'B+', gradeReason: 'Good culture, solid learning' },
         // Europe
-        { name: 'Spotify', location: 'Stockholm, Sweden', stipend: '€4,500/month', careers: 'https://lifeatspotify.com' },
-        { name: 'Revolut', location: 'London, UK', stipend: '£4,000/month', careers: 'https://revolut.com/careers' },
-        { name: 'BlaBlaCar', location: 'Paris, France', stipend: '€2,500/month', careers: 'https://blablacar.com/careers' },
-        { name: 'Klarna', location: 'Amsterdam, Netherlands', stipend: '€3,500/month', careers: 'https://klarna.com/careers' },
-        { name: 'Adyen', location: 'Amsterdam, Netherlands', stipend: '€4,000/month', careers: 'https://careers.adyen.com' },
-        { name: 'Deliveroo', location: 'London, UK', stipend: '£3,500/month', careers: 'https://careers.deliveroo.com' },
-        { name: 'Zalando', location: 'Berlin, Germany', stipend: '€3,000/month', careers: 'https://jobs.zalando.com' },
+        { name: 'Spotify', location: 'Stockholm, Sweden', stipend: '€4,500/month', careers: 'https://lifeatspotify.com', grade: 'A', gradeReason: 'Excellent culture and WLB' },
+        { name: 'Revolut', location: 'London, UK', stipend: '£4,000/month', careers: 'https://revolut.com/careers', grade: 'B', gradeReason: 'Fast growth but demanding' },
+        { name: 'BlaBlaCar', location: 'Paris, France', stipend: '€2,500/month', careers: 'https://blablacar.com/careers', grade: 'C+', gradeReason: 'Average pay, decent learning' },
+        { name: 'Klarna', location: 'Amsterdam, Netherlands', stipend: '€3,500/month', careers: 'https://klarna.com/careers', grade: 'B', gradeReason: 'Good culture, fair pay' },
+        { name: 'Adyen', location: 'Amsterdam, Netherlands', stipend: '€4,000/month', careers: 'https://careers.adyen.com', grade: 'B+', gradeReason: 'Good pay, technical depth' },
+        { name: 'Deliveroo', location: 'London, UK', stipend: '£3,500/month', careers: 'https://careers.deliveroo.com', grade: 'C+', gradeReason: 'Average program, OK learning' },
+        { name: 'Zalando', location: 'Berlin, Germany', stipend: '€3,000/month', careers: 'https://jobs.zalando.com', grade: 'B-', gradeReason: 'Good culture, average pay' },
         // Asia Pacific
-        { name: 'Grab', location: 'Singapore', stipend: 'SGD 4,000/month', careers: 'https://grab.careers' },
-        { name: 'Atlassian', location: 'Sydney, Australia', stipend: 'AUD 5,500/month', careers: 'https://atlassian.com/company/careers' },
-        { name: 'Rakuten', location: 'Tokyo, Japan', stipend: '¥350,000/month', careers: 'https://global.rakuten.com/corp/careers' },
-        { name: 'ByteDance', location: 'Singapore', stipend: 'SGD 5,000/month', careers: 'https://jobs.bytedance.com' },
-        { name: 'Sea Group', location: 'Singapore', stipend: 'SGD 4,500/month', careers: 'https://careers.sea.com' },
+        { name: 'Grab', location: 'Singapore', stipend: 'SGD 4,000/month', careers: 'https://grab.careers', grade: 'B+', gradeReason: 'Regional leader, good learning' },
+        { name: 'Atlassian', location: 'Sydney, Australia', stipend: 'AUD 5,500/month', careers: 'https://atlassian.com/company/careers', grade: 'A', gradeReason: 'Excellent culture and benefits' },
+        { name: 'Rakuten', location: 'Tokyo, Japan', stipend: '¥350,000/month', careers: 'https://global.rakuten.com/corp/careers', grade: 'B', gradeReason: 'Good pay, structured program' },
+        { name: 'ByteDance', location: 'Singapore', stipend: 'SGD 5,000/month', careers: 'https://jobs.bytedance.com', grade: 'B+', gradeReason: 'High pay but intense hours' },
+        { name: 'Sea Group', location: 'Singapore', stipend: 'SGD 4,500/month', careers: 'https://careers.sea.com', grade: 'B', gradeReason: 'Growing company, good exposure' },
         // Latin America & MENA
-        { name: 'Mercado Libre', location: 'Buenos Aires, Argentina', stipend: 'Competitive', careers: 'https://mercadolibre.com/jobs' },
-        { name: 'Nubank', location: 'São Paulo, Brazil', stipend: 'R$8,000/month', careers: 'https://nubank.com.br/carreiras' },
-        { name: 'Careem', location: 'Dubai, UAE', stipend: 'AED 8,000/month', careers: 'https://careem.com/careers' },
-        { name: 'Rappi', location: 'Bogotá, Colombia', stipend: 'Competitive', careers: 'https://rappi.com/jobs' }
+        { name: 'Mercado Libre', location: 'Buenos Aires, Argentina', stipend: 'Competitive', careers: 'https://mercadolibre.com/jobs', grade: 'B', gradeReason: 'Regional giant, good learning' },
+        { name: 'Nubank', location: 'São Paulo, Brazil', stipend: 'R$8,000/month', careers: 'https://nubank.com.br/carreiras', grade: 'A-', gradeReason: 'Top fintech, great culture' },
+        { name: 'Careem', location: 'Dubai, UAE', stipend: 'AED 8,000/month', careers: 'https://careem.com/careers', grade: 'B', gradeReason: 'Good exposure, solid pay' },
+        { name: 'Rappi', location: 'Bogotá, Colombia', stipend: 'Competitive', careers: 'https://rappi.com/jobs', grade: 'C', gradeReason: 'Startup culture, variable quality' }
     ];
     
     const roles = [
@@ -281,7 +298,9 @@ function generateRealLookingJobs(skills) {
         status: 'active',
         isReal: true,
         applyUrl: company.careers,
-        fitScore: calculateFitScore(skills, { requiredSkills: skills?.slice(0, 4) || [] })
+        fitScore: calculateFitScore(skills, { requiredSkills: skills?.slice(0, 4) || [] }),
+        companyGrade: company.grade,
+        gradeReason: company.gradeReason
     }));
 }
 
@@ -582,6 +601,18 @@ async function loadInternships() {
 
 // Helper function to render internship cards
 function renderInternshipCards(internships, container, isRealMode) {
+    // Helper to get grade color
+    const getGradeColor = (grade) => {
+        if (!grade) return '#6b7280';
+        const g = grade.toUpperCase().replace(/[+-]/g, '');
+        if (g === 'A') return '#059669'; // Green
+        if (g === 'B') return '#2563eb'; // Blue
+        if (g === 'C') return '#f59e0b'; // Orange
+        if (g === 'D') return '#ef4444'; // Red
+        if (g === 'F') return '#7f1d1d'; // Dark Red
+        return '#6b7280';
+    };
+    
     for (const job of internships) {
         const fitColor = getFitColor(job.fitScore);
         const fitLabel = getFitLabel(job.fitScore);
@@ -591,6 +622,11 @@ function renderInternshipCards(internships, container, isRealMode) {
         const jobCompany = company.replace(/'/g, "\\'");
         const isReal = job.isReal || false;
         const realBadge = isReal ? '<span style="background:#059669;color:white;padding:0.2rem 0.5rem;border-radius:0.25rem;font-size:0.7rem;margin-left:0.5rem;">REAL</span>' : '';
+        
+        // Company grade badge
+        const companyGrade = job.companyGrade || null;
+        const gradeColor = getGradeColor(companyGrade);
+        const gradeBadge = companyGrade ? `<span title="${job.gradeReason || 'Company internship rating'}" style="background:${gradeColor};color:white;padding:0.2rem 0.5rem;border-radius:0.25rem;font-size:0.75rem;font-weight:bold;margin-left:0.5rem;cursor:help;">Grade: ${companyGrade}</span>` : '';
         
         // Check if application is locked (fit score < 40%)
         const isLocked = job.fitScore < 40;
@@ -615,7 +651,7 @@ function renderInternshipCards(internships, container, isRealMode) {
             </div>
             
             <h3 style="margin-bottom:0.25rem;padding-right:120px;">${title}${realBadge}</h3>
-            <p style="color:#2563eb;font-weight:600;margin:0 0 1rem 0;">${company}</p>
+            <p style="color:#2563eb;font-weight:600;margin:0 0 0.5rem 0;">${company}${gradeBadge}</p>
             
             ${lockedBadge}
             
