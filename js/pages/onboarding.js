@@ -35,8 +35,8 @@ window.selectUserType = function(userType) {
 
 window.handleLogout = async function() {
     try {
-        await authManager.signOut();
-        router.navigate('/login');
+        await auth.signOut();
+        window.location.hash = '/login';
     } catch (error) {
         console.error('Logout error:', error);
     }
@@ -45,7 +45,7 @@ window.handleLogout = async function() {
 window.submitProfile = async function(e) {
     if (e) e.preventDefault();
     
-    console.log('Profile form submitted');
+    console.log('=== SUBMIT PROFILE CALLED ===');
     console.log('Selected user type:', window.selectedUserType);
 
     if (!window.selectedUserType) {
@@ -63,88 +63,74 @@ window.submitProfile = async function(e) {
         return;
     }
 
+    // Get the current user directly from Firebase auth
+    const user = auth.currentUser;
+    console.log('Current Firebase user:', user);
+    
+    if (!user) {
+        alert('Error: You must be logged in. Please refresh and try again.');
+        window.location.hash = '/login';
+        return;
+    }
+
     try {
-        console.log('Creating profile...');
-        console.log('Current user:', authManager.currentUser);
-        
-        if (!authManager.currentUser) {
-            throw new Error('You must be logged in to complete your profile');
-        }
-        
-        errorDiv.style.display = 'none';
+        console.log('Creating profile for user:', user.uid);
+        if (errorDiv) errorDiv.style.display = 'none';
 
         const profileData = {
+            email: user.email,
             userType: window.selectedUserType,
             name: name,
             role: role || '',
             location: location || '',
-            createdAt: new Date().toISOString()
+            profileComplete: true,
+            createdAt: new Date(),
+            updatedAt: new Date()
         };
 
         if (window.selectedUserType === 'student') {
             const skillsInput = document.getElementById('skills');
             const targetRolesInput = document.getElementById('targetRoles');
             
-            profileData.skills = skillsInput ? skillsInput.value.split(',').map(s => s.trim()).filter(s => s) : [];
-            profileData.targetRoles = targetRolesInput ? targetRolesInput.value.split(',').map(r => r.trim()).filter(r => r) : [];
+            profileData.skills = skillsInput && skillsInput.value ? skillsInput.value.split(',').map(s => s.trim()).filter(s => s) : [];
+            profileData.targetRoles = targetRolesInput && targetRolesInput.value ? targetRolesInput.value.split(',').map(r => r.trim()).filter(r => r) : [];
+            profileData.company = null;
         } else {
             const companyInput = document.getElementById('company');
             profileData.company = companyInput ? companyInput.value : '';
+            profileData.skills = [];
+            profileData.targetRoles = [];
         }
 
-        console.log('Profile data:', profileData);
+        console.log('Profile data to save:', profileData);
         
-        // Save to Firestore
-        await db.collection('users').doc(authManager.currentUser.uid).set({
-            email: authManager.currentUser.email,
-            userType: profileData.userType,
-            name: profileData.name,
-            role: profileData.role,
-            location: profileData.location,
-            skills: profileData.skills || [],
-            targetRoles: profileData.targetRoles || [],
-            company: profileData.company || null,
-            profileComplete: true,
-            createdAt: new Date(),
-            updatedAt: new Date()
-        });
+        // Save to Firestore using Firebase directly
+        await db.collection('users').doc(user.uid).set(profileData);
         
-        console.log('Profile saved to Firestore');
+        console.log('Profile saved successfully!');
         
-        // Reload the user profile
-        await authManager.loadUserProfile();
-        console.log('User profile reloaded:', authManager.currentUserProfile);
+        // Update authManager
+        authManager.currentUser = user;
+        authManager.currentUserProfile = profileData;
 
-        // Redirect to dashboard
+        // Show success and redirect
+        alert('Profile created successfully!');
+        
         if (window.selectedUserType === 'student') {
-            console.log('Navigating to student dashboard');
+            console.log('Redirecting to student dashboard');
             window.location.hash = '/student/dashboard';
         } else {
-            console.log('Navigating to recruiter dashboard');
+            console.log('Redirecting to recruiter dashboard');
             window.location.hash = '/recruiter/dashboard';
         }
     } catch (error) {
         console.error('Onboarding error:', error);
-        errorDiv.textContent = 'Error: ' + (error.message || error);
-        errorDiv.style.display = 'block';
+        alert('Error creating profile: ' + error.message);
+        if (errorDiv) {
+            errorDiv.textContent = 'Error: ' + error.message;
+            errorDiv.style.display = 'block';
+        }
     }
 };
 
-function initOnboarding() {
-    const form = document.getElementById('profileForm');
-    
-    if (!form) {
-        console.error('Profile form not found');
-        return;
-    }
-    
-    console.log('Onboarding form initialized');
-
-    form.addEventListener('submit', function(e) {
-        e.preventDefault();
-        window.submitProfile(e);
-    });
-}
-
-// Wait for DOM to be ready
-setTimeout(initOnboarding, 100);
+console.log('Onboarding.js loaded - submitProfile is:', typeof window.submitProfile);

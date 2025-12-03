@@ -2,7 +2,7 @@
 
 window.handleLogout = async function() {
     try {
-        await authManager.signOut();
+        await auth.signOut();
         window.location.hash = '/login';
     } catch (error) {
         console.error('Logout error:', error);
@@ -19,19 +19,27 @@ window.viewOffers = function() {
 
 async function loadDashboard() {
     try {
-        console.log('Loading recruiter dashboard...');
+        const user = auth.currentUser;
+        console.log('Loading recruiter dashboard for user:', user?.uid);
+        
+        if (!user) {
+            console.error('No user logged in');
+            return;
+        }
         
         // Get offers created by this recruiter
+        console.log('Querying offers with recruiterId:', user.uid);
         const snapshot = await db.collection('offers')
-            .where('recruiterId', '==', authManager.currentUser.uid)
+            .where('recruiterId', '==', user.uid)
             .get();
         
         const offers = [];
         snapshot.forEach(doc => {
+            console.log('Found offer:', doc.id, doc.data());
             offers.push({ id: doc.id, ...doc.data() });
         });
 
-        console.log('Loaded offers:', offers.length);
+        console.log('Total offers found:', offers.length);
 
         const totalOffersEl = document.getElementById('totalOffers');
         if (totalOffersEl) totalOffersEl.textContent = offers.length;
@@ -113,19 +121,22 @@ async function loadDashboard() {
 function initRecruiterDashboard() {
     console.log('Initializing recruiter dashboard');
     
-    // Wait for auth to be ready
-    if (!authManager.currentUser) {
-        console.log('Waiting for auth...');
-        setTimeout(initRecruiterDashboard, 200);
-        return;
-    }
-    
-    const companyName = document.getElementById('companyName');
-    if (companyName && authManager.currentUserProfile) {
-        companyName.textContent = authManager.currentUserProfile.company || 'Recruiter';
-    }
-    
-    loadDashboard();
+    // Wait for Firebase auth to be ready
+    auth.onAuthStateChanged(function(user) {
+        if (user) {
+            console.log('Auth ready, user:', user.uid);
+            
+            const companyName = document.getElementById('companyName');
+            if (companyName && authManager.currentUserProfile) {
+                companyName.textContent = authManager.currentUserProfile.company || 'Recruiter';
+            }
+            
+            loadDashboard();
+        } else {
+            console.log('No user, redirecting to login');
+            window.location.hash = '/login';
+        }
+    });
 }
 
-setTimeout(initRecruiterDashboard, 200);
+setTimeout(initRecruiterDashboard, 100);

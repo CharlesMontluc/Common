@@ -2,7 +2,7 @@
 
 window.handleLogout = async function() {
     try {
-        await authManager.signOut();
+        await auth.signOut();
         window.location.hash = '/login';
     } catch (error) {
         console.error('Logout error:', error);
@@ -25,7 +25,15 @@ function initOfferForm() {
 
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
-        console.log('Creating offer...');
+        
+        const user = auth.currentUser;
+        console.log('Creating offer for user:', user?.uid);
+        
+        if (!user) {
+            alert('You must be logged in to create an offer');
+            window.location.hash = '/login';
+            return;
+        }
 
         const title = document.getElementById('title').value;
         const role = document.getElementById('role').value;
@@ -54,8 +62,7 @@ function initOfferForm() {
         try {
             if (errorDiv) errorDiv.style.display = 'none';
 
-            // Create offer directly in Firestore
-            await db.collection('offers').add({
+            const offerData = {
                 title,
                 role,
                 location,
@@ -65,7 +72,7 @@ function initOfferForm() {
                 requiredSkills,
                 responsibilities,
                 requirements,
-                recruiterId: authManager.currentUser.uid,
+                recruiterId: user.uid,
                 recruiterName: authManager.currentUserProfile?.name || 'Unknown',
                 recruiterCompany: authManager.currentUserProfile?.company || 'Unknown',
                 company: authManager.currentUserProfile?.company || 'Unknown',
@@ -73,13 +80,19 @@ function initOfferForm() {
                 updatedAt: new Date(),
                 status: 'active',
                 applicantCount: 0
-            });
+            };
+            
+            console.log('Saving offer:', offerData);
 
-            console.log('Offer created successfully');
+            // Create offer directly in Firestore
+            const docRef = await db.collection('offers').add(offerData);
+
+            console.log('Offer created successfully with ID:', docRef.id);
             alert('Offer created successfully!');
             window.location.hash = '/recruiter/dashboard';
         } catch (error) {
             console.error('Error creating offer:', error);
+            alert('Error creating offer: ' + error.message);
             if (errorDiv) {
                 errorDiv.textContent = 'Error: ' + error.message;
                 errorDiv.style.display = 'block';
